@@ -32,5 +32,5 @@ In full accordance with competition transparency requirements, this document out
 The team fully understands and can independently defend every mathematical equation, architectural decision, and line of source code presented in this repository, including:
 1. The mathematical derivation of the signal-to-noise ratio in linear associative memory: $\hat{v} = S_t q = \text{Signal} + \text{Noise}$.
 2. The exact relationship between state dimension $d$ and orthogonal subspace capacity.
-3. The architectural distinction between Transformer KV-cache expansion ($O(T)$) and BDH recurrent synaptic plasticity ($O(1)$).
+3. The architectural distinction between Transformer KV-cache expansion ($O(T \cdot d)$) and recurrent synaptic plasticity (fixed footprint $O(d^2)$ with respect to sequence length $T$ for a fixed model configuration).
 4. How BDH-CQ operates in latent space to bypass verbalized Chain-of-Thought token generation.

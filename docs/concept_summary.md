@@ -8,7 +8,7 @@
 
 ### 1. Problem & Design Pressure
 
-Modern Large Language Models rely primarily on the Transformer architecture, which retains sequence history by caching Key and Value vectors for every processed token in an external KV cache. Over long context horizons (e.g., 32k to 1M+ tokens), this induces an $O(T \cdot d \cdot L)$ linear memory footprint in High Bandwidth GPU Memory (VRAM), where $T$ is sequence length, $d$ is head dimension, and $L$ is layer count. Serving long-context models under concurrent traffic triggers severe memory bandwidth bottlenecks and hardware cost inflation. The central architectural design pressure is therefore: *Can a neural system process arbitrary-length token streams using a strictly constant-sized memory footprint ($O(1)$ in $T$)?*
+Modern Large Language Models rely primarily on the Transformer architecture, which retains sequence history by caching Key and Value vectors for every processed token in an external KV cache. Over long context horizons (e.g., 32k to 1M+ tokens), this induces an $O(T \cdot d \cdot L)$ linear memory footprint in High Bandwidth GPU Memory (VRAM), where $T$ is sequence length, $d$ is head dimension, and $L$ is layer count. Serving long-context models under concurrent traffic triggers severe memory bandwidth bottlenecks and hardware cost inflation. The central architectural design pressure is therefore: *Can a neural system process arbitrarily long token sequences using a memory footprint that remains fixed with respect to sequence length $T$ for a fixed model configuration?*
 
 ---
 
@@ -16,7 +16,7 @@ Modern Large Language Models rely primarily on the Transformer architecture, whi
 
 > **"A fixed-size evolving state can process sequences whose duration grows without allocating a new memory slot for every token, but limited state capacity can cause interference and forgetting."**
 
-This claim establishes both the efficiency promise and the thermodynamic/geometric boundaries of recurrent memory systems.
+This claim establishes both the efficiency promise and the representational, geometric, and capacity boundaries of recurrent memory systems.
 
 ---
 
@@ -34,7 +34,7 @@ This output decomposes analytically into target signal plus cross-talk interfere
 
 $$\hat{v} = \underbrace{\lambda^{t - t_{\text{target}}} (k_{\text{target}}^T q) v_{\text{target}}}_{\text{Target Signal Component}} + \underbrace{\sum_{\tau \neq \text{target}} \lambda^{t-\tau} (k_\tau^T q) v_\tau}_{\text{Cross-Talk Noise Component}}$$
 
-When sequence length $T \le d$ and keys are orthogonal ($k_\tau^T q = 0$ for $\tau \neq \text{target}$), cross-talk noise is zero. However, by linear algebra's dimension theorem, $\mathbb{R}^d$ supports at most $d$ mutually orthogonal directions. When $T \gg d$, incoming vectors inevitably project onto existing directions, inflating cross-talk noise and driving the Signal-to-Noise Ratio (SNR) into negative decibels.
+When sequence length $T \le d$ and keys are drawn from an orthogonal basis ($k_\tau^T q = 0$ for $\tau \neq \text{target}$), cross-talk noise is zero. However, by linear algebra's dimension theorem, $\mathbb{R}^d$ supports up to $d$ mutually orthogonal directions; more than $d$ are mathematically impossible. In practice, keys are non-orthogonal, and when $T \gg d$, incoming vectors inevitably project onto existing directions, inflating cross-talk noise and driving the Signal-to-Noise Ratio (SNR) into negative decibels.
 
 ---
 
@@ -48,8 +48,8 @@ As frontier models tackle long-horizon reasoning, agentic planning, and multi-st
 
 | Property | Transformer KV Cache | Recurrent Vector (RNN/GRU) | Linear Attention / SSM | Pathway BDH / BDH-CQ |
 | :--- | :--- | :--- | :--- | :--- |
-| **Memory Footprint** | $O(T \cdot d)$ [Linear VRAM ramp] | $O(d)$ [Single vector bottleneck] | $O(d^2)$ [Constant matrix state] | $O(d^2)$ or $O(\|E\|)$ [Synaptic graph] |
-| **Inference Cost / Token** | $O(T)$ Memory-bandwidth bound | $O(d^2)$ Compute bound | $O(d^2)$ Compute bound | $O(1)$ via latent recurrence |
+| **Memory Footprint** | $O(T \cdot d)$ [Linear VRAM ramp] | $O(d)$ [Single vector bottleneck] | $O(d^2)$ [Constant matrix state] | $O(d^2)$ or $O(\|E\|)$ [Fixed in $T$] |
+| **Inference Cost / Token** | $O(T)$ Memory-bandwidth bound | $O(d^2)$ Compute bound | $O(d^2)$ Compute bound | Fixed in $T$ (latent recurrence) |
 | **Reasoning Substrate** | Verbalized token emission | Verbalized token emission | Verbalized token emission | Iterative latent workspace |
 | **Long-Horizon Failure** | Out-of-Memory (VRAM exhaustion) | Information bottleneck ($d$ scalars) | Finite rank cross-talk | Synaptic saturation in latent space |
 
@@ -57,15 +57,15 @@ As frontier models tackle long-horizon reasoning, agentic planning, and multi-st
 
 ### 6. The Frontier Role of BDH and BDH-CQ
 
-Pathway researchers introduced **Baby Dragon Hatchling (BDH, arXiv:2509.26507)** to connect machine learning with neuroscience. BDH reformulates attention as dynamic synaptic plasticity across a scale-free graph of locally interacting neuron particles. By constraining queries and keys to identical projections ($Q = K$) with sparse, non-negative ReLU activations, token interactions mirror Donald Hebb's biological law ("cells that fire together wire together"), making synaptic weights interpretable.
+Pathway researchers introduced **Dragon Hatchling (BDH, arXiv:2509.26507)** to connect machine learning with neuroscience. BDH reformulates attention as dynamic synaptic plasticity across a scale-free graph of locally interacting neuron particles. By constraining queries and keys to identical projections ($Q = K$) with sparse, non-negative ReLU activations, token interactions mirror Donald Hebb's biological law ("cells that fire together wire together"), making synaptic weights interpretable.
 
-Building upon BDH, Pathway introduced **BDH-CQ (arXiv:2608.09888, Aug 2026)**. In-context demonstrations update the model's recurrent memory at inference time without parameter fine-tuning. The model then solves queries through iterative computation directly in high-dimensional latent space—**without generating verbalized CoT tokens**. On the public ARC-AGI-1 benchmark, a 150M BDH-CQ model achieved **29.5% pass@2 at $0.0007 per task**, demonstrating that recurrent evolving states can achieve frontier reasoning at over 500x lower inference cost than dense Transformers.
+Building upon BDH, Pathway introduced **BDH-CQ (arXiv:2608.09888, Aug 2026)**. In-context demonstrations update the model's recurrent memory at inference time without parameter fine-tuning. The model then solves queries through iterative computation directly in high-dimensional latent space—**without generating verbalized CoT tokens**. On the public ARC-AGI-1 benchmark, a 150M BDH-CQ model achieved **29.5% pass@2 at a computed inference cost of $0.0007/task**, establishing a reported cost-efficiency Pareto point on ARC-AGI-1 public evaluation.
 
 ---
 
 ### 7. Limitations & Empirical Trade-Offs
 
-1. **Finite Rank:** An associative matrix $S \in \mathbb{R}^{d \times d}$ has mathematical rank $\le d$. It cannot match the infinite selective capacity of non-linear Softmax attention when $T \gg d$.
+1. **Finite Rank:** An associative matrix $S \in \mathbb{R}^{d \times d}$ has mathematical rank $\le d$. It cannot match the non-linear exponential selective capacity of Softmax attention when $T \gg d$.
 2. **Exponential Decay Dilemma:** Setting $\lambda < 1.0$ is mandatory to prevent numerical divergence, but exponentially discounts early facts ($\lambda^t$), causing recency amnesia.
 3. **Quasi-Orthogonality in Real Text:** Natural language embeddings are clustered, causing cross-talk to accumulate significantly faster than in idealized orthogonal codebooks.
 4. **Toy Model Distinctions:** Our interactive simulator uses a 2D associative matrix to make linear algebra inspectable. Production architectures (BDH, Mamba, RetNet) utilize multi-layer sparse projections and input-dependent gating.

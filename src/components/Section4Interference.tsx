@@ -1,6 +1,6 @@
 import type { Fact, RetrievalResult } from '../types/memory';
 import { SignalNoiseDecomposition } from '../visualizations/SignalNoiseDecomposition';
-import { HelpCircle, Sparkles } from 'lucide-react';
+import { HelpCircle } from 'lucide-react';
 
 interface Section4Props {
   facts: Fact[];
@@ -30,65 +30,70 @@ export const Section4Interference: React.FC<Section4Props> = ({
   const probeOptions = ['Color', 'Shape', 'Location'];
 
   return (
-    <section id="section-interference" className="py-10 border-b border-slate-800">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
-          SECTION 4 (CORE EXPERIMENT)
+    <section id="section-interference" className="py-8 border-b border-slate-800">
+      {/* Academic Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800/80 pb-2.5 mb-3 gap-1.5 text-[11px] font-mono">
+        <span className="text-slate-300 font-semibold tracking-wider uppercase">
+          &sect; 04 / CORE EXPERIMENT &bull; SUBSPACE INTERFERENCE &amp; FORGETTING
         </span>
-        <h2 className="text-xl font-bold tracking-tight text-white">
-          Interference & Forgetting: Probing the Saturated State
-        </h2>
+        <span className="text-slate-400">
+          [LIVE COMPUTATION &bull; EDUCATIONAL TOY MODEL]
+        </span>
       </div>
-      <p className="text-sm text-slate-400 mb-6 max-w-3xl leading-relaxed">
-        We inject early ground-truth facts, followed by an arbitrary sequence of intervening distractor tokens. Later, we probe the state with a query key <code className="font-mono text-cyan-300">q</code>. Notice how intervening tokens leak cross-talk noise into the retrieved vector.
+
+      <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white mb-2">
+        Interference &amp; Forgetting: Probing the Saturated State
+      </h2>
+      <p className="text-xs sm:text-sm text-slate-300 mb-5 max-w-3xl leading-relaxed">
+        Ground-truth facts are injected at early positions ($t=1..3$), followed by an arbitrary sequence of intervening distractor tokens. Later, we probe the state with query key <code className="font-mono text-slate-200">q</code>. Intervening tokens leak cross-talk noise into the retrieved vector whenever key directions overlap.
       </p>
 
       {/* Facts Sequence Tape Preview */}
-      <div className="bg-dark-900 border border-slate-800 rounded-xl p-3.5 mb-4 shadow-sm">
+      <div className="bg-[#0b111a] border border-slate-800 rounded p-3 mb-4">
         <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-2">
           <span>Injected Fact History ({facts.length} tokens):</span>
           <span className="text-[10px] text-cyan-400">Target facts injected at t=1..3</span>
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="flex gap-1.5 overflow-x-auto pb-1">
           {facts.slice(0, 12).map((f) => (
             <span
               key={f.id}
-              className={`px-2 py-1 rounded text-[11px] font-mono whitespace-nowrap border ${
+              className={`px-2 py-0.5 rounded text-[11px] font-mono whitespace-nowrap border ${
                 f.key === selectedProbe
-                  ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 font-semibold ring-1 ring-cyan-500/30'
+                  ? 'bg-slate-800 text-slate-100 border-slate-600 font-semibold'
                   : f.isDistractor
-                  ? 'bg-dark-950 text-slate-400 border-slate-800'
-                  : 'bg-dark-900 text-slate-200 border-slate-700'
+                  ? 'bg-[#070c14] text-slate-400 border-slate-800'
+                  : 'bg-[#09101b] text-slate-300 border-slate-750'
               }`}
             >
               t={f.step}: {f.key}={f.value}
             </span>
           ))}
           {facts.length > 12 && (
-            <span className="px-2 py-1 rounded text-[11px] font-mono text-slate-500 bg-dark-950 border border-slate-800 self-center">
+            <span className="px-2 py-0.5 rounded text-[11px] font-mono text-slate-500 bg-[#070c14] border border-slate-800 self-center">
               +{facts.length - 12} more
             </span>
           )}
         </div>
       </div>
 
-      {/* Interactive Probing & Variable Controls */}
-      <div className="bg-dark-900 border border-slate-800 rounded-xl p-4 mb-6 shadow-xl space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+      {/* Interactive Probing & Parameter Controls */}
+      <div className="bg-[#0b111a] border border-slate-800 rounded p-3.5 mb-5 space-y-3.5">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
           {/* Query Selector */}
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
-              <HelpCircle size={14} className="text-cyan-400" />
-              Probe Question:
+          <div className="flex items-center gap-2">
+            <span className="text-slate-300 font-semibold flex items-center gap-1">
+              <HelpCircle size={13} className="text-slate-400" />
+              Probe Query:
             </span>
-            <div className="flex rounded-lg bg-dark-950 p-1 border border-slate-800">
+            <div className="flex rounded bg-[#070c14] p-0.5 border border-slate-800">
               {probeOptions.map((opt) => (
                 <button
                   key={opt}
                   onClick={() => setSelectedProbe(opt)}
-                  className={`px-3 py-1 text-xs font-mono rounded transition-all ${
+                  className={`px-2.5 py-1 text-xs rounded transition-colors ${
                     selectedProbe === opt
-                      ? 'bg-cyan-500/20 text-cyan-300 font-semibold border border-cyan-500/40'
+                      ? 'bg-slate-800 text-slate-100 border border-slate-700 font-semibold'
                       : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
@@ -98,8 +103,8 @@ export const Section4Interference: React.FC<Section4Props> = ({
             </div>
           </div>
 
-          {/* Quick preset triggers */}
-          <div className="flex items-center gap-2 text-xs">
+          {/* Sequence Length Slider */}
+          <div className="flex items-center gap-2">
             <span className="text-slate-400">Sequence Length (T):</span>
             <input
               type="range"
@@ -108,20 +113,20 @@ export const Section4Interference: React.FC<Section4Props> = ({
               step="1"
               value={sequenceLength}
               onChange={(e) => setSequenceLength(Number(e.target.value))}
-              className="w-28 accent-rose-500 cursor-pointer"
+              className="w-24 cursor-pointer"
             />
-            <span className="font-mono text-rose-300 w-8 text-right font-semibold">
+            <span className="w-8 text-right font-semibold text-slate-200 tabular-nums">
               {sequenceLength}
             </span>
           </div>
         </div>
 
         {/* Secondary controls: Decay & Key Correlation */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-slate-800/80 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2.5 border-t border-slate-800/80 text-xs font-mono">
           <div className="flex items-center justify-between">
             <div>
               <span className="text-slate-300 block font-medium">Decay Factor (λ): {decay.toFixed(2)}</span>
-              <span className="text-[10px] text-slate-500">Exponential discounting of older facts</span>
+              <span className="text-[10px] text-slate-500 font-sans">Exponential discounting of older facts</span>
             </div>
             <input
               type="range"
@@ -130,14 +135,14 @@ export const Section4Interference: React.FC<Section4Props> = ({
               step="0.02"
               value={decay}
               onChange={(e) => setDecay(Number(e.target.value))}
-              className="w-24 accent-indigo-500 cursor-pointer"
+              className="w-20 cursor-pointer"
             />
           </div>
 
           <div className="flex items-center justify-between">
             <div>
               <span className="text-slate-300 block font-medium">Key Correlation (ρ): {(keyCorrelation * 100).toFixed(0)}%</span>
-              <span className="text-[10px] text-slate-500">Directional similarity among keys</span>
+              <span className="text-[10px] text-slate-500 font-sans">Directional alignment among keys</span>
             </div>
             <input
               type="range"
@@ -146,16 +151,16 @@ export const Section4Interference: React.FC<Section4Props> = ({
               step="0.05"
               value={keyCorrelation}
               onChange={(e) => setKeyCorrelation(Number(e.target.value))}
-              className="w-24 accent-rose-500 cursor-pointer"
+              className="w-20 cursor-pointer"
             />
           </div>
         </div>
       </div>
 
       {/* Main Grid: Signal/Noise Decomposition & Candidate Ranking */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Left: Signal & Noise Decomposition Visualizer */}
-        <div className="lg:col-span-7 space-y-4">
+        <div className="lg:col-span-7 space-y-3.5">
           <SignalNoiseDecomposition
             signalNorm={retrievalResult.signalNorm}
             noiseNorm={retrievalResult.noiseNorm}
@@ -168,19 +173,18 @@ export const Section4Interference: React.FC<Section4Props> = ({
         </div>
 
         {/* Right: Vocabulary Candidates Match Ranking */}
-        <div className="lg:col-span-5 space-y-4">
-          <div className="bg-dark-900 border border-slate-800 rounded-xl p-4 shadow-xl">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
-                <Sparkles size={13} className="text-cyan-400" />
+        <div className="lg:col-span-5 space-y-3.5">
+          <div className="bg-[#0b111a] border border-slate-800 rounded p-4">
+            <div className="flex items-center justify-between mb-2.5">
+              <span className="text-xs font-semibold text-slate-300 font-mono">
                 Vocabulary Cosine Alignment
               </span>
-              <span className="text-[10px] font-mono text-slate-400">
+              <span className="text-[10px] font-mono text-slate-500">
                 cos(v_hat, v_cand)
               </span>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {retrievalResult.candidates.map((cand, idx) => {
                 const isTarget = cand.value === retrievalResult.expectedValue;
                 const isSelected = cand.value === retrievalResult.predictedValue;
@@ -189,14 +193,14 @@ export const Section4Interference: React.FC<Section4Props> = ({
                 return (
                   <div
                     key={idx}
-                    className={`p-2 rounded-lg border transition-all text-xs font-mono ${
+                    className={`p-2 rounded border transition-colors text-xs font-mono ${
                       isSelected
                         ? isTarget
                           ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300'
                           : 'bg-rose-500/10 border-rose-500/40 text-rose-300'
                         : isTarget
-                        ? 'bg-dark-950 border-emerald-500/30 text-slate-300'
-                        : 'bg-dark-950 border-slate-800 text-slate-400'
+                        ? 'bg-[#070c14] border-emerald-500/30 text-slate-300'
+                        : 'bg-[#070c14] border-slate-800 text-slate-400'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
@@ -208,12 +212,12 @@ export const Section4Interference: React.FC<Section4Props> = ({
                           </span>
                         )}
                       </span>
-                      <span>{cand.similarity.toFixed(4)}</span>
+                      <span className="tabular-nums">{cand.similarity.toFixed(4)}</span>
                     </div>
 
-                    <div className="h-1.5 w-full bg-dark-850 rounded-full overflow-hidden">
+                    <div className="h-1 w-full bg-[#0b121c] rounded overflow-hidden">
                       <div
-                        className={`h-full rounded-full ${
+                        className={`h-full ${
                           isSelected
                             ? isTarget
                               ? 'bg-emerald-500'
@@ -228,8 +232,8 @@ export const Section4Interference: React.FC<Section4Props> = ({
               })}
             </div>
 
-            <p className="text-[11px] text-slate-400 mt-4 leading-relaxed font-sans border-t border-slate-800/80 pt-3">
-              The query vector <code className="font-mono text-cyan-300">q</code> computes <code className="font-mono text-cyan-300">S_t q</code>. When intervening tokens have non-zero projection onto <code className="font-mono text-cyan-300">q</code>, their value vectors contaminate the output, elevating incorrect candidates.
+            <p className="text-[11px] text-slate-400 mt-3 leading-relaxed font-sans border-t border-slate-800/80 pt-2.5">
+              The query vector <code className="font-mono text-slate-200">q</code> computes <code className="font-mono text-slate-200">S_t q</code>. When intervening tokens have non-zero projection onto <code className="font-mono text-slate-200">q</code>, their value vectors contaminate the output, elevating incorrect candidates.
             </p>
           </div>
         </div>

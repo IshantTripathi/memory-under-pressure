@@ -40,7 +40,7 @@ export const MemoryGrowthChart: React.FC<MemoryGrowthChartProps> = ({
   const crossoverStep = Math.round(dimension / 2);
 
   return (
-    <div className="bg-dark-900 border border-slate-800 rounded-xl p-4 shadow-xl">
+    <div className="bg-[#0b111a] border border-slate-800 rounded p-4">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold text-slate-200">Memory Allocation Scaling</span>
@@ -173,7 +173,7 @@ export const MemoryGrowthChart: React.FC<MemoryGrowthChartProps> = ({
       </svg>
       <div className="mt-1 text-[11px] text-slate-400 flex items-center justify-between">
         <span>At step t={currentStep}: KV Cache is <strong>{(currentKvBytes / (fixedBytes || 1)).toFixed(1)}x</strong> the size of the fixed state.</span>
-        <span className="text-cyan-400 font-mono">O(1) memory vs O(T) memory</span>
+        <span className="text-cyan-400 font-mono">Fixed O(d²) state vs linear O(T·d) KV cache</span>
       </div>
     </div>
   );

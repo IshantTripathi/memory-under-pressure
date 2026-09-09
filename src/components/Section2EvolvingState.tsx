@@ -32,33 +32,38 @@ export const Section2EvolvingState: React.FC<Section2Props> = ({ facts, dimensio
   };
 
   return (
-    <section id="section-state" className="py-10 border-b border-slate-800">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-          SECTION 2
+    <section id="section-state" className="py-8 border-b border-slate-800">
+      {/* Academic Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800/80 pb-2.5 mb-3 gap-1.5 text-[11px] font-mono">
+        <span className="text-slate-300 font-semibold tracking-wider uppercase">
+          &sect; 02 / RECURRENT STATE MECHANICS &bull; INCREMENTAL UPDATE ENGINE
         </span>
-        <h2 className="text-xl font-bold tracking-tight text-white">
-          What is an Evolving State? The Mechanics of Recurrent Memory
-        </h2>
+        <span className="text-slate-400">
+          [LIVE COMPUTATION &bull; EDUCATIONAL TOY MODEL]
+        </span>
       </div>
-      <p className="text-sm text-slate-400 mb-6 max-w-3xl leading-relaxed">
-        An evolving state compresses historical context into an internal matrix or vector using an incremental update function: <code className="text-cyan-300 font-mono">S_t = update(S_{'{t-1}'}, x_t)</code>. Inspect each incoming token and observe how the weights change.
+
+      <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white mb-2">
+        What is an Evolving State? The Mechanics of Recurrent Memory
+      </h2>
+      <p className="text-xs sm:text-sm text-slate-300 mb-5 max-w-3xl leading-relaxed">
+        An evolving state compresses sequence context into an internal matrix via a recurrence step: <code className="text-slate-200 font-mono">S_t = update(S_{'{t-1}'}, x_t)</code>. Inspect each incoming token to observe how outer-product matrices accumulate. <em>(Note: This interactive component is an educational toy model of linear recurrence, not an official BDH implementation.)</em>
       </p>
 
       {/* Control Toolbar */}
-      <div className="bg-dark-900 border border-slate-800 rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-[#0b111a] border border-slate-800 rounded p-3.5 mb-5 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
         {/* Method Selector */}
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400 flex items-center gap-1">
-            <Sliders size={13} />
+          <span className="text-slate-400 flex items-center gap-1">
+            <Sliders size={12} />
             Update Rule:
           </span>
-          <div className="flex rounded-lg bg-dark-950 p-1 border border-slate-800">
+          <div className="flex rounded bg-[#070c14] p-0.5 border border-slate-800">
             <button
               onClick={() => setUpdateMethod('hebbian')}
-              className={`px-2.5 py-1 text-xs font-mono rounded transition-all ${
+              className={`px-2.5 py-1 text-xs rounded transition-colors ${
                 updateMethod === 'hebbian'
-                  ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-semibold'
+                  ? 'bg-slate-800 text-slate-100 border border-slate-700 font-semibold'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -66,9 +71,9 @@ export const Section2EvolvingState: React.FC<Section2Props> = ({ facts, dimensio
             </button>
             <button
               onClick={() => setUpdateMethod('delta')}
-              className={`px-2.5 py-1 text-xs font-mono rounded transition-all ${
+              className={`px-2.5 py-1 text-xs rounded transition-colors ${
                 updateMethod === 'delta'
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-semibold'
+                  ? 'bg-slate-800 text-slate-100 border border-slate-700 font-semibold'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -76,19 +81,19 @@ export const Section2EvolvingState: React.FC<Section2Props> = ({ facts, dimensio
             </button>
             <button
               onClick={() => setUpdateMethod('bdh_synaptic')}
-              className={`px-2.5 py-1 text-xs font-mono rounded transition-all ${
+              className={`px-2.5 py-1 text-xs rounded transition-colors ${
                 updateMethod === 'bdh_synaptic'
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold'
+                  ? 'bg-slate-800 text-slate-100 border border-slate-700 font-semibold'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              BDH Synaptic (Q=K)
+              BDH Synaptic (Q=K Toy Model)
             </button>
           </div>
         </div>
 
         {/* Decay Slider */}
-        <div className="flex items-center gap-2 text-xs">
+        <div className="flex items-center gap-2">
           <span className="text-slate-400">Decay (λ):</span>
           <input
             type="range"
@@ -97,9 +102,9 @@ export const Section2EvolvingState: React.FC<Section2Props> = ({ facts, dimensio
             step="0.02"
             value={decay}
             onChange={(e) => setDecay(Number(e.target.value))}
-            className="w-24 accent-indigo-500 cursor-pointer"
+            className="w-20 cursor-pointer"
           />
-          <span className="font-mono text-indigo-300 w-10 text-right">
+          <span className="text-slate-300 w-10 text-right tabular-nums">
             {decay.toFixed(2)}
           </span>
         </div>
@@ -109,59 +114,59 @@ export const Section2EvolvingState: React.FC<Section2Props> = ({ facts, dimensio
           <button
             onClick={handleNext}
             disabled={currentStep >= facts.length}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-medium transition-colors shadow-lg shadow-indigo-600/30"
+            className="flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-750 disabled:opacity-40 disabled:cursor-not-allowed text-slate-100 border border-slate-700 transition-colors"
           >
-            Inject Token {currentStep + 1}
-            <ChevronRight size={14} />
+            <span>Step {currentStep + 1}</span>
+            <ChevronRight size={13} />
           </button>
           <button
             onClick={handleReset}
-            className="p-1.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-slate-400 hover:text-slate-200 border border-slate-700 transition-colors"
+            className="p-1 rounded bg-[#0b121c] hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition-colors"
             title="Reset to step 1"
           >
-            <RotateCcw size={14} />
+            <RotateCcw size={13} />
           </button>
         </div>
       </div>
 
       {/* Main Grid: Visual Pipeline & Matrix Heatmap */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Left Column: Update Pipeline Visualization */}
-        <div className="lg:col-span-6 space-y-4">
-          <div className="bg-dark-900 border border-slate-800 rounded-xl p-4 shadow-xl">
-            <h3 className="text-xs font-semibold text-slate-200 mb-3">
+        <div className="lg:col-span-6 space-y-3.5">
+          <div className="bg-[#0b111a] border border-slate-800 rounded p-4">
+            <h3 className="text-xs font-semibold text-slate-300 mb-2.5 font-mono">
               Step-by-Step Computational Flow
             </h3>
 
-            <div className="space-y-3 font-mono text-xs">
+            <div className="space-y-2.5 font-mono text-xs">
               {/* Previous State */}
-              <div className="p-3 bg-dark-950 rounded-lg border border-slate-800 flex items-center justify-between">
+              <div className="p-2.5 bg-[#070c14] rounded border border-slate-800 flex items-center justify-between">
                 <div>
-                  <span className="text-slate-500 text-[10px] block">PREVIOUS STATE</span>
-                  <span className="text-indigo-400 font-semibold">S_{currentStep - 1}</span>
-                  <span className="text-slate-400 ml-2">({dimension}×{dimension} matrix)</span>
+                  <span className="text-slate-500 text-[10px] block uppercase">PREVIOUS STATE</span>
+                  <span className="text-slate-200 font-semibold">S_{currentStep - 1}</span>
+                  <span className="text-slate-400 ml-2">({dimension}&times;{dimension} matrix)</span>
                 </div>
-                <div className="text-slate-500 text-xs">× decay ({decay.toFixed(2)})</div>
+                <div className="text-slate-500 text-[11px]">&times; decay ({decay.toFixed(2)})</div>
               </div>
 
               <div className="flex justify-center text-slate-600">
-                <ArrowRight size={16} className="rotate-90" />
+                <ArrowRight size={14} className="rotate-90" />
               </div>
 
               {/* Incoming Fact */}
-              <div className="p-3 bg-dark-950 rounded-lg border border-cyan-500/30 glow-cyan">
-                <span className="text-slate-500 text-[10px] block">NEW INCOMING TOKEN / FACT</span>
+              <div className="p-2.5 bg-[#070c14] rounded border border-slate-800">
+                <span className="text-slate-500 text-[10px] block uppercase">INCOMING TOKEN / ATTRIBUTE</span>
                 <div className="flex items-center justify-between mt-1">
                   <div>
                     <span className="text-cyan-400 font-semibold">{currentFact.key}: </span>
-                    <span className="text-slate-100">{currentFact.value}</span>
+                    <span className="text-slate-200">{currentFact.value}</span>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-dark-850 text-slate-300 border border-slate-800">
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-850 text-slate-400 border border-slate-800">
                     Step {currentStep}
                   </span>
                 </div>
                 {/* Vectors preview */}
-                <div className="mt-2 text-[10px] text-slate-400 space-y-1">
+                <div className="mt-2 text-[10px] text-slate-400 space-y-0.5">
                   <div>
                     Key Vector k_t: [{currentFact.keyVector.slice(0, 4).map(v => v.toFixed(2)).join(', ')}...]
                   </div>
@@ -172,19 +177,19 @@ export const Section2EvolvingState: React.FC<Section2Props> = ({ facts, dimensio
               </div>
 
               <div className="flex justify-center text-slate-600">
-                <ArrowRight size={16} className="rotate-90" />
+                <ArrowRight size={14} className="rotate-90" />
               </div>
 
               {/* State Update Rule */}
-              <div className="p-3 bg-dark-950 rounded-lg border border-emerald-500/30">
-                <span className="text-slate-500 text-[10px] block">OUTER PRODUCT STATE UPDATE</span>
-                <div className="text-emerald-400 font-semibold mt-0.5">
+              <div className="p-2.5 bg-[#070c14] rounded border border-slate-800">
+                <span className="text-slate-500 text-[10px] block uppercase">OUTER PRODUCT STATE UPDATE</span>
+                <div className="text-slate-200 font-semibold mt-0.5">
                   {updateMethod === 'hebbian' && 'S_t = λ S_{t-1} + v_t ⊗ k_t^T'}
                   {updateMethod === 'delta' && 'S_t = λ S_{t-1} + (v_t - S_{t-1} k_t) ⊗ k_t^T'}
                   {updateMethod === 'bdh_synaptic' && 'S_t = λ S_{t-1} + ReLU(x_t) ⊗ ReLU(x_t)^T'}
                 </div>
                 <div className="text-[11px] text-slate-400 mt-1 font-sans">
-                  The rank-1 matrix update is superposed directly onto the existing state tensor.
+                  The rank-1 matrix update is superposed directly into the existing state tensor.
                 </div>
               </div>
             </div>
@@ -192,7 +197,7 @@ export const Section2EvolvingState: React.FC<Section2Props> = ({ facts, dimensio
         </div>
 
         {/* Right Column: Inspectable Matrix Heatmap */}
-        <div className="lg:col-span-6 space-y-4">
+        <div className="lg:col-span-6 space-y-3.5">
           <StateMatrixHeatmap
             matrix={state.matrix}
             dimension={dimension}
@@ -200,8 +205,9 @@ export const Section2EvolvingState: React.FC<Section2Props> = ({ facts, dimensio
             step={currentStep}
           />
 
-          <div className="p-3 bg-dark-900/60 border border-slate-800 rounded-xl text-xs text-slate-400 leading-relaxed font-sans">
-            <strong className="text-slate-200">Mathematical Insight:</strong> Every token contributes an outer product <code className="text-cyan-300 font-mono">v_t k_t^T</code>. If key vectors are mutually orthogonal, they reside in orthogonal subspaces with zero interference. But when multiple tokens share geometric directions, their outer products collide.
+          <div className="border-l-2 border-slate-700 bg-[#070c14] p-3 text-xs text-slate-300 leading-relaxed font-sans">
+            <strong className="text-slate-200 block font-mono text-[10px] uppercase tracking-wider mb-0.5">Mathematical Insight</strong>
+            Every token contributes an outer product <code className="text-cyan-300 font-mono">v_t k_t^T</code>. If key vectors are mutually orthogonal, they reside in orthogonal subspaces with zero interference. But when multiple tokens share geometric directions, their outer products collide.
           </div>
         </div>
       </div>

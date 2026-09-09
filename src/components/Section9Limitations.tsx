@@ -7,7 +7,7 @@ export const Section9Limitations: React.FC = () => {
       title: '1. Finite-Rank State Bottleneck',
       tag: 'Mathematical Limit',
       description:
-        'An associative state matrix S in R^{d x d} has mathematical rank at most d. When storing T facts where T >> d, the pigeonhole principle guarantees that value vectors must be superposed into non-orthogonal directions. Unlike Softmax attention which can query an infinite set of cached tokens with non-linear selectivity, a linear state cannot escape rank saturation.',
+        'An associative state matrix S in R^{d x d} has mathematical rank at most d. When storing T facts where T >> d, the pigeonhole principle guarantees that value vectors must be superposed into non-orthogonal directions. Unlike Softmax attention which can query cached tokens with non-linear exponential selectivity, a linear state cannot escape rank saturation.',
     },
     {
       title: '2. Quasi-Orthogonality in Real Language',
@@ -31,23 +31,26 @@ export const Section9Limitations: React.FC = () => {
       title: '5. Educational Model vs Production BDH / BDH-CQ',
       tag: 'Engineering Reality',
       description:
-        'Our in-browser interactive simulator uses a simplified 2D associative matrix to make linear algebra visually inspectable. Production architectures like Pathway’s BDH (arXiv:2509.26507) and BDH-CQ (arXiv:2608.09888) operate over scale-free graphs of neuron particles, multi-head sparse projections, and iterative latent reasoning loops that exceed simplified toy outer products.',
+        'Our in-browser interactive simulator uses a simplified 2D associative matrix to make linear algebra visually inspectable. Production architectures like Pathway’s Dragon Hatchling BDH (arXiv:2509.26507) and BDH-CQ (arXiv:2608.09888) operate over scale-free graphs of neuron particles, multi-head sparse projections, and iterative latent reasoning loops that exceed simplified toy outer products.',
     },
   ];
 
   return (
     <section id="section-limitations" className="py-10 border-b border-slate-800">
       <div className="flex items-center gap-2 mb-2">
-        <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
-          SECTION 9
+        <span className="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-slate-800 text-rose-400 border border-slate-700">
+          § 09 / BOUNDARY CONDITIONS
+        </span>
+        <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-rose-950/40 text-rose-300 border border-rose-800/40">
+          THEORETICAL ANALYSIS • CRITICAL MEMORANDUM
         </span>
         <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-          Limitations, Edge Cases & Frontier Misconceptions
+          Theoretical Boundaries & Engineering Realities
           <ShieldAlert size={18} className="text-rose-400" />
         </h2>
       </div>
       <p className="text-sm text-slate-400 mb-6 max-w-3xl leading-relaxed">
-        Intellectual honesty is the hallmark of frontier research. Fixed-size evolving states solve the VRAM memory wall, but introduce hard physical and geometric trade-offs. Here are the five critical failure modes and boundaries.
+        Intellectual rigor requires explicit identification of architectural limits. Fixed-size evolving states prevent $O(T)$ KV cache footprint growth, but introduce hard representational, geometric, and information-theoretic trade-offs. The five critical failure modes and boundaries are documented below.
       </p>
 
       {/* Limitations Grid */}
@@ -55,17 +58,17 @@ export const Section9Limitations: React.FC = () => {
         {limitations.map((lim, idx) => (
           <div
             key={idx}
-            className="p-4 bg-dark-900 border border-slate-800 rounded-xl shadow-xl flex flex-col justify-between space-y-3"
+            className="p-4 bg-[#0b111a] border border-slate-800 rounded flex flex-col justify-between space-y-3"
           >
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-dark-950 text-slate-400 border border-slate-800">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#080d14] text-slate-400 border border-slate-800">
                   {lim.tag}
                 </span>
-                <span className="text-slate-600 font-mono text-xs">#{idx + 1}</span>
+                <span className="text-slate-500 font-mono text-xs">§9.{idx + 1}</span>
               </div>
               <h3 className="text-xs font-bold text-slate-200">{lim.title}</h3>
-              <p className="text-xs text-slate-400 mt-2 leading-relaxed font-sans">
+              <p className="text-xs text-slate-400 mt-2 leading-relaxed">
                 {lim.description}
               </p>
             </div>

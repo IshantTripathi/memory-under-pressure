@@ -60,17 +60,25 @@ export function generateCodebook(
 
   // Distractor keys and values
   DISTRACTOR_POOLS.forEach((dist, idx) => {
-    let kVec = sampleRandomVector();
+    let kVec: number[];
+    const basisIdx = CANONICAL_ATTRIBUTES.length + idx;
+
     if (keyCorrelation > 0) {
       // Blend distractor key towards one of the canonical keys to introduce intentional key collisions
+      const baseRandom = sampleRandomVector();
       const targetCanonicalKey = CANONICAL_ATTRIBUTES[idx % CANONICAL_ATTRIBUTES.length].key;
       const canonicalVec = keyVectors.get(targetCanonicalKey)!;
       // k_dist = normalize((1 - corr) * k_rand + corr * k_canonical)
       const blended = vectorAdd(
-        vectorScale(kVec, 1 - keyCorrelation),
+        vectorScale(baseRandom, 1 - keyCorrelation),
         vectorScale(canonicalVec, keyCorrelation)
       );
       kVec = normalizeVector(blended);
+    } else if (basisIdx < basis.length) {
+      // If within orthonormal basis dimension, use strictly orthogonal basis vector for genuinely clean baseline
+      kVec = basis[basisIdx];
+    } else {
+      kVec = sampleRandomVector();
     }
     keyVectors.set(dist.key, kVec);
 

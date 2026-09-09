@@ -27,7 +27,7 @@ This repository grounds all technical claims, architectural comparisons, and mat
 * **What the Paper Demonstrates:**
   - Demonstrates in-context learning via continuous recurrent memory updates from demonstration examples without parameter fine-tuning.
   - Executes iterative reasoning entirely within high-dimensional latent space without verbalizing intermediate Chain-of-Thought (CoT) text tokens.
-  - Reaches **29.5% pass@2** on the public ARC-AGI-1 evaluation set at an inference cost of **$0.0007 per task** (150M parameter model), establishing a new Pareto frontier in benchmark cost efficiency.
+  - Reaches **29.5% pass@2** on the public ARC-AGI-1 evaluation set at an inference cost of **$0.0007 per task** (150M parameter model), establishing a reported cost-efficiency Pareto point on the public benchmark.
 
 ---
 
@@ -49,7 +49,7 @@ This repository grounds all technical claims, architectural comparisons, and mat
 * **Evidence Level:** Primary Technical Report with Scale Empirical Evaluations
 * **What the Paper Demonstrates:**
   - Multi-scale retention mechanism introducing explicit exponential decay factors $\lambda < 1$ to preserve numerical stability and prevent state explosion.
-  - Achieves $O(1)$ inference memory per token and $O(1)$ inference latency.
+  - Achieves constant inference memory per token with respect to sequence length $T$ and $O(1)$ recurrent step latency.
 
 ### Reference 5: Mamba SSM
 * **Title:** *Mamba: Linear-Time Sequence Modeling with Selective State Spaces*

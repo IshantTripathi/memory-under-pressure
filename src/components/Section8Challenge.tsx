@@ -62,29 +62,32 @@ export const Section8Challenge: React.FC = () => {
   return (
     <section id="section-challenge" className="py-10 border-b border-slate-800">
       <div className="flex items-center gap-2 mb-2">
-        <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-          SECTION 8 (60-SECOND TEST)
+        <span className="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-slate-800 text-cyan-400 border border-slate-700">
+          § 08 / ACTIVE RECALL BENCH
+        </span>
+        <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-950/40 text-cyan-300 border border-cyan-800/40">
+          LIVE COMPUTATION • EMPIRICAL PROOF
         </span>
         <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-          The 60-Second Challenge: Test Your Mental Model
+          Diagnostic Evaluation: Test Your Mental Model
           <Trophy size={18} className="text-amber-400" />
         </h2>
       </div>
       <p className="text-sm text-slate-400 mb-6 max-w-3xl leading-relaxed">
-        Can you predict how evolving states behave under pressure? Answer each diagnostic scenario, then click &quot;Verify in Simulation&quot; to test your prediction against live linear algebra computation.
+        Can you predict how evolving states behave under memory pressure? Formulate your hypothesis for each scenario, then execute &quot;Verify in Simulation&quot; to test your prediction against the active linear algebra substrate.
       </p>
 
       {/* Progress & Score Banner */}
-      <div className="bg-dark-900 border border-slate-800 rounded-xl p-4 mb-6 flex items-center justify-between shadow-xl">
+      <div className="bg-[#0b111a] border border-slate-800 rounded p-4 mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-slate-200">Diagnostic Mastery:</span>
-          <span className="text-xs font-mono px-2 py-0.5 rounded bg-dark-950 text-cyan-300 border border-slate-800">
-            {correctCount} / {DIAGNOSTIC_QUESTIONS.length} Correct
+          <span className="text-xs font-semibold text-slate-200">Diagnostic Mastery Score:</span>
+          <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#080d14] text-cyan-300 border border-slate-800 tabular-nums">
+            {correctCount} / {DIAGNOSTIC_QUESTIONS.length} Validated
           </span>
         </div>
         {totalAnswered === DIAGNOSTIC_QUESTIONS.length && (
-          <span className="text-xs font-mono text-emerald-400 font-semibold animate-pulse">
-            All Scenarios Evaluated!
+          <span className="text-xs font-mono text-emerald-400 font-semibold">
+            All Scenarios Evaluated
           </span>
         )}
       </div>
@@ -98,18 +101,18 @@ export const Section8Challenge: React.FC = () => {
           return (
             <div
               key={q.id}
-              className="bg-dark-900 border border-slate-800 rounded-xl p-5 shadow-xl space-y-4"
+              className="bg-[#0b111a] border border-slate-800 rounded p-5 space-y-4"
             >
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start justify-between gap-3 pb-3 border-b border-slate-800">
                 <div>
                   <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider block">
-                    Scenario {q.id}
+                    Scenario {q.id} / Diagnostic Hypothesis
                   </span>
                   <h3 className="text-sm font-bold text-slate-100">{q.title}</h3>
                 </div>
                 <button
                   onClick={() => handleVerifyInSimulation(q.id)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 text-xs font-mono border border-cyan-500/30 transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-mono border border-slate-700 transition-colors"
                 >
                   <Play size={12} />
                   Verify in Simulation
@@ -117,7 +120,7 @@ export const Section8Challenge: React.FC = () => {
               </div>
 
               {/* Scenario description */}
-              <div className="p-3 bg-dark-950 rounded-lg border border-slate-800/80 text-xs text-slate-300 leading-relaxed">
+              <div className="p-3 bg-[#080d14] rounded border border-slate-800 text-xs text-slate-300 leading-relaxed font-mono">
                 {q.scenario}
               </div>
 
@@ -128,25 +131,25 @@ export const Section8Challenge: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {q.options.map((opt) => {
                   const isSelected = userChoice === opt.id;
-                  let optStyle = 'bg-dark-950 hover:bg-dark-850 border-slate-800 text-slate-300';
+                  let optStyle = 'bg-[#080d14] hover:bg-slate-900 border-slate-800 text-slate-300';
 
                   if (isSubmitted) {
                     if (opt.isCorrect) {
-                      optStyle = 'bg-emerald-500/15 border-emerald-500/50 text-emerald-300 font-semibold ring-1 ring-emerald-500/30';
+                      optStyle = 'bg-emerald-950/30 border-emerald-700/60 text-emerald-200 font-semibold';
                     } else if (isSelected && !opt.isCorrect) {
-                      optStyle = 'bg-rose-500/15 border-rose-500/50 text-rose-300 ring-1 ring-rose-500/30';
+                      optStyle = 'bg-rose-950/30 border-rose-700/60 text-rose-200';
                     }
                   } else if (isSelected) {
-                    optStyle = 'bg-cyan-500/20 border-cyan-500/40 text-cyan-200';
+                    optStyle = 'bg-cyan-950/30 border-cyan-700/60 text-cyan-200';
                   }
 
                   return (
                     <button
                       key={opt.id}
                       onClick={() => handleSelectOption(q.id, opt.id)}
-                      className={`p-3 rounded-lg border text-left text-xs transition-all flex items-start gap-2.5 ${optStyle}`}
+                      className={`p-3 rounded border text-left text-xs transition-all flex items-start gap-2.5 ${optStyle}`}
                     >
-                      <span className="font-mono font-bold w-5 h-5 rounded bg-dark-900 border border-slate-700 flex items-center justify-center shrink-0 text-[11px]">
+                      <span className="font-mono font-bold w-5 h-5 rounded bg-[#0b111a] border border-slate-700 flex items-center justify-center shrink-0 text-[11px]">
                         {opt.id}
                       </span>
                       <span className="leading-snug">{opt.text}</span>
@@ -157,7 +160,7 @@ export const Section8Challenge: React.FC = () => {
 
               {/* Feedback Explanations */}
               {isSubmitted && (
-                <div className="p-3 rounded-lg bg-dark-950 border border-slate-800 text-xs leading-relaxed space-y-1">
+                <div className="p-3 rounded bg-[#080d14] border border-slate-800 text-xs leading-relaxed space-y-1">
                   {q.options.map((opt) => {
                     if (!opt.isCorrect && userChoice !== opt.id) return null;
                     return (
@@ -181,31 +184,31 @@ export const Section8Challenge: React.FC = () => {
 
               {/* Simulation Verification Drawer */}
               {liveTestOutput && liveTestOutput.questionId === q.id && (
-                <div className="p-3.5 rounded-lg bg-dark-950 border border-cyan-500/40 glow-cyan font-mono text-xs space-y-2">
+                <div className="p-3.5 rounded bg-[#080d14] border border-cyan-800/60 font-mono text-xs space-y-2">
                   <div className="flex items-center justify-between text-cyan-300 font-semibold">
                     <span>Live Simulation Proof: {liveTestOutput.label}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-200">
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800/40">
                       COMPUTED LIVE
                     </span>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] pt-1">
-                    <div className="p-2 rounded bg-dark-900 border border-slate-800">
+                    <div className="p-2 rounded bg-[#0b111a] border border-slate-800">
                       <span className="text-slate-500 block text-[10px]">EXPECTED</span>
                       <span className="text-emerald-400 font-bold">{liveTestOutput.expected}</span>
                     </div>
-                    <div className="p-2 rounded bg-dark-900 border border-slate-800">
+                    <div className="p-2 rounded bg-[#0b111a] border border-slate-800">
                       <span className="text-slate-500 block text-[10px]">MODEL RETRIEVAL</span>
                       <span className={liveTestOutput.isCorrect ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>
                         {liveTestOutput.actual}
                       </span>
                     </div>
-                    <div className="p-2 rounded bg-dark-900 border border-slate-800">
+                    <div className="p-2 rounded bg-[#0b111a] border border-slate-800">
                       <span className="text-slate-500 block text-[10px]">SIGNAL-TO-NOISE</span>
-                      <span className={liveTestOutput.snrDb > 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>
+                      <span className={liveTestOutput.snrDb > 0 ? 'text-emerald-400 font-bold tabular-nums' : 'text-rose-400 font-bold tabular-nums'}>
                         {liveTestOutput.snrDb > 0 ? `+${liveTestOutput.snrDb}` : liveTestOutput.snrDb} dB
                       </span>
                     </div>
-                    <div className="p-2 rounded bg-dark-900 border border-slate-800">
+                    <div className="p-2 rounded bg-[#0b111a] border border-slate-800">
                       <span className="text-slate-500 block text-[10px]">VERDICT</span>
                       <span className={liveTestOutput.isCorrect ? 'text-emerald-300 font-bold' : 'text-rose-300 font-bold'}>
                         {liveTestOutput.isCorrect ? 'PRESERVED' : 'INTERFERENCE'}
@@ -220,16 +223,16 @@ export const Section8Challenge: React.FC = () => {
       </div>
 
       {/* Self-Explanation Prompt */}
-      <div className="mt-8 p-5 bg-dark-900 border border-slate-800 rounded-xl shadow-xl space-y-3">
-        <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+      <div className="mt-8 p-5 bg-[#0b111a] border border-slate-800 rounded space-y-3">
+        <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 font-mono">
           <HelpCircle size={15} className="text-indigo-400" />
-          Explain in Your Own Words
+          Technical Synthesis: Key Concept
         </h3>
         <p className="text-xs text-slate-400 leading-relaxed">
-          To consolidate your understanding, explain the central claim to a colleague in 1–2 sentences:
+          Consolidate the central architectural finding into a concise technical statement:
         </p>
-        <div className="p-3.5 bg-dark-950 rounded-lg border border-slate-800 text-xs font-mono text-slate-300 leading-relaxed">
-          &quot;A fixed-size evolving state avoids growing memory by fusing tokens into constant dimensions, but because a vector space in $\mathbb&#123;R&#125;^d$ can only preserve $d$ orthogonal directions, processing long sequences forces outer-product collisions that manifest as cross-talk noise and selective forgetting.&quot;
+        <div className="p-3.5 bg-[#080d14] rounded border border-slate-800 text-xs font-mono text-slate-300 leading-relaxed">
+          &quot;A recurrent state achieves a constant-size footprint with respect to sequence length $T$, but because a vector space $\mathbb&#123;R&#125;^d$ supports at most $d$ mutually orthogonal directions, continuing to write beyond $T &gt; d$ forces non-orthogonal superpositions that induce cross-talk interference and inevitable state saturation.&quot;
         </div>
       </div>
     </section>

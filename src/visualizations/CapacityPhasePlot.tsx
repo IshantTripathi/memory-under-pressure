@@ -47,7 +47,7 @@ export const CapacityPhasePlot: React.FC<CapacityPhasePlotProps> = ({
   const capX = getX(dimension);
 
   return (
-    <div className="bg-dark-900 border border-slate-800 rounded-xl p-4 shadow-xl">
+    <div className="bg-[#0b111a] border border-slate-800 rounded p-4">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold text-slate-200">Capacity Phase Transition Curve</span>
@@ -55,7 +55,7 @@ export const CapacityPhasePlot: React.FC<CapacityPhasePlotProps> = ({
         </div>
         <div className="flex items-center gap-2 text-xs font-mono">
           <span className="text-slate-400">Operating Ratio:</span>
-          <span className={`font-semibold ${sequenceLength <= dimension ? 'text-cyan-400' : 'text-rose-400'}`}>
+          <span className={`font-semibold tabular-nums ${sequenceLength <= dimension ? 'text-cyan-400' : 'text-rose-400'}`}>
             T/d = {(sequenceLength / dimension).toFixed(2)}x
           </span>
         </div>

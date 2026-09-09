@@ -1,7 +1,7 @@
 # Memory Under Pressure: How AI Models Remember, Update and Forget Across Long Sequences
 
-[![Vitest](https://img.shields.io/badge/tests-11%20passing-emerald.svg)](https://github.com/pathwaycom/bdh)
-[![Vite](https://img.shields.io/badge/vite-6.0-cyan.svg)](https://vitejs.dev)
+[![Vitest](https://img.shields.io/badge/tests-12%20passing-emerald.svg)](https://github.com/pathwaycom/bdh)
+[![Vite](https://img.shields.io/badge/vite-8.2-cyan.svg)](https://vitejs.dev)
 [![React](https://img.shields.io/badge/react-19-indigo.svg)](https://react.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./SOURCES_AND_LICENSES.md)
 [![Track](https://img.shields.io/badge/DataForge%202026-Pathway%20Track-blue.svg)](https://pathway.com)
@@ -13,9 +13,9 @@
 
 ## 1. The Frontier Problem
 
-Standard Transformer Large Language Models retain sequence context by storing all Key and Value vectors for every processed token in an external **KV Cache**. Over long horizons, this induces an **$O(T \cdot d \cdot L)$ linear memory explosion** in GPU VRAM ($T$ = sequence length, $d$ = head dimension, $L$ = layer count). Serving long context models requires massive memory bandwidth and yields severe cost inflation.
+Standard Transformer Large Language Models retain sequence context by storing all Key and Value vectors for every processed token in an external **KV Cache**. Over long horizons, this induces **linear growth in cached-token memory ($O(T \cdot d \cdot L)$)** in GPU VRAM ($T$ = sequence length, $d$ = head dimension, $L$ = layer count). Serving long context models requires massive memory bandwidth and yields severe cost inflation.
 
-Recurrent state-space models and Pathway's **BDH (Baby Dragon Hatchling)** architecture maintain fixed-size representations where memory footprint is **$O(1)$ constant in sequence length $T$**. But finite state capacity introduces a fundamental trade-off: **subspace interference and forgetting**.
+Recurrent state-space models and Pathway's **Dragon Hatchling (BDH)** architecture maintain fixed-size representations where memory footprint is **fixed with respect to sequence length $T$ for a fixed model configuration** (bounded at $O(d^2)$ state parameters per layer). But finite state capacity introduces a fundamental trade-off: **subspace interference and forgetting**.
 
 ---
 
@@ -32,7 +32,7 @@ This claim is made experimentally testable inside this application. The learner 
 ```
 OPEN APPLICATION
   ↓
-[Section 1: The Memory Problem] (Live running stream: O(T) KV cache vs O(1) fixed state)
+[Section 1: The Memory Problem] (Live running stream: O(T) KV cache vs fixed-size evolving state)
   ↓
 [Section 2: What is an Evolving State?] (Step-by-step matrix update inspector & cell heatmap)
   ↓
@@ -76,14 +76,14 @@ The simulation substrate is implemented in pure TypeScript with zero external ma
 
 This project directly connects evolving state dynamics to two primary Pathway research papers:
 
-### A. Baby Dragon Hatchling (BDH, arXiv:2509.26507)
+### A. Dragon Hatchling (BDH, arXiv:2509.26507)
 * **Mechanism:** Replaces external KV-cache buffers with dynamic synaptic plasticity across a scale-free graph of interacting neuron particles.
 * **$Q = K$ Self-Affinity:** Constrains queries and keys to identical projections from sparse, non-negative ReLU activations, implementing Donald Hebb's biological law ("neurons that fire together wire together").
 * **Synaptic Working Memory:** Synaptic weights adapt on the fly during inference without parameter fine-tuning.
 
 ### B. BDH-CQ (arXiv:2608.09888, Aug 2026)
 * **Recurrent Latent Reasoning:** In-context demonstrations continuously update the model's recurrent memory; reasoning occurs directly in high-dimensional latent space without emitting intermediate Chain-of-Thought (CoT) text tokens.
-* **Benchmark Performance:** Achieved **29.5% pass@2 on ARC-AGI-1 at $0.0007 per task** (under 1/10th of a cent), establishing a new cost-accuracy Pareto frontier compared to multi-dollar LLM CoT solutions.
+* **Benchmark Performance:** Achieved **29.5% pass@2 on public ARC-AGI-1 at $0.0007 per task** (under 1/10th of a cent), establishing a reported cost-efficiency Pareto point on the public benchmark.
 
 ### Transparency Standard
 * **Published Benchmark Results:** ARC-AGI-1 benchmark accuracy and cost numbers are cited directly from arXiv:2608.09888.
@@ -97,7 +97,7 @@ This project directly connects evolving state dynamics to two primary Pathway re
 /
 ├── src/
 │   ├── components/
-│   │   ├── Section1MemoryProblem.tsx       # Live O(T) vs O(1) memory comparison
+│   │   ├── Section1MemoryProblem.tsx       # Live O(T) KV cache vs fixed-size state comparison
 │   │   ├── Section2EvolvingState.tsx       # Evolving state recurrence inspector
 │   │   ├── Section3Capacity.tsx            # Dimension controls & singular spectrum
 │   │   ├── Section4Interference.tsx        # Probe query & Truth-Beside-Estimate
@@ -151,7 +151,7 @@ This project directly connects evolving state dynamics to two primary Pathway re
 ### Installation & Development
 ```bash
 # 1. Clone repository
-git clone https://github.com/your-username/memory-under-pressure.git
+git clone https://github.com/IshantTripathi/memory-under-pressure.git
 cd memory-under-pressure
 
 # 2. Install dependencies
@@ -185,13 +185,13 @@ The interface provides 6 deterministic presets:
 3. **Severe Saturation ($T \gg d$):** $T=60, d=8$. Catastrophic cross-talk noise, early facts buried under superposition.
 4. **Selective Decay ($\lambda = 0.92$):** $T=35, d=16$. Exponential decay prevents state explosion, causing recency amnesia.
 5. **Key Collision ($\rho = 0.70$):** $T=20, d=16$. Correlated key vectors force value leakage regardless of dimension.
-6. **"Break It" Stress Benchmark:** $T=250, d=8$. Demonstrates hard geometric and thermodynamic state limits.
+6. **"Break It" Stress Benchmark:** $T=250, d=8$. Demonstrates hard geometric, representational, and interference capacity limits.
 
 ---
 
 ## 9. Limitations & Failure Cases
 
-1. **Finite Rank:** An associative matrix $S_t \in \mathbb{R}^{d \times d}$ has rank at most $d$. It cannot match the infinite selective capacity of non-linear Softmax attention when $T \gg d$.
+1. **Finite Rank:** An associative matrix $S_t \in \mathbb{R}^{d \times d}$ has rank at most $d$. It cannot match the dynamic input-dependent selective precision of non-linear Softmax attention when $T \gg d$.
 2. **Exponential Decay Dilemma:** Setting $\lambda < 1.0$ is necessary to prevent numerical divergence, but exponentially discounts early context ($\lambda^t$), creating recency bias.
 3. **Quasi-Orthogonality in Real Text:** Natural language embeddings are clustered, causing cross-talk to accumulate significantly faster than in idealized orthogonal codebooks.
 4. **Toy Model Distinctions:** Our simulator uses a 2D associative matrix to make linear algebra inspectable; production architectures (BDH, Mamba, RetNet) utilize multi-layer sparse projections and input-dependent gating.

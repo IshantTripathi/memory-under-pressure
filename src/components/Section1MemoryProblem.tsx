@@ -38,81 +38,85 @@ export const Section1MemoryProblem: React.FC<Section1Props> = ({ dimension }) =>
   ];
 
   return (
-    <section id="section-problem" className="py-10 border-b border-slate-800">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-          SECTION 1
+    <section id="section-problem" className="py-8 border-b border-slate-800">
+      {/* Academic Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800/80 pb-2.5 mb-3 gap-1.5 text-[11px] font-mono">
+        <span className="text-slate-300 font-semibold tracking-wider uppercase">
+          &sect; 01 / LIVE BENCHMARK &bull; HORIZON SCALING COMPARISON
         </span>
-        <h2 className="text-xl font-bold tracking-tight text-white">
-          The Memory Problem: Why Can&apos;t AI Remember Everything?
-        </h2>
+        <span className="text-slate-400">
+          [LIVE COMPUTATION &bull; EDUCATIONAL TOY MODEL]
+        </span>
       </div>
-      <p className="text-sm text-slate-400 mb-6 max-w-3xl leading-relaxed">
-        Watch a live sequence stream into two different memory architectures. Standard Transformers store every token into an ever-expanding KV cache ($O(T)$ growth). Recurrent evolving states maintain a constant-sized representation ($O(1)$ memory).
+
+      <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white mb-2">
+        The Memory Problem: Why Can&apos;t AI Retain Everything Indefinitely?
+      </h2>
+      <p className="text-xs sm:text-sm text-slate-300 mb-5 max-w-3xl leading-relaxed">
+        Observe a live sequence stream into two distinct memory paradigms. Standard autoregressive Transformers store every token key-value vector in high-bandwidth memory ($O(T \cdot d \cdot L)$ linear growth). Fixed recurrent states maintain an internal representation whose memory footprint is <strong>fixed with respect to sequence length $T$ for a fixed model configuration</strong> ($O(d^2)$ state parameters).
       </p>
 
-      {/* Main Simulation Container */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* Main Simulation Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Column: Live Token Stream & Playback Controls */}
-        <div className="lg:col-span-6 space-y-4">
-          <div className="bg-dark-900 border border-slate-800 rounded-xl p-4 shadow-xl">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-xs font-semibold text-slate-200">Live Ingested Token Stream</span>
-              </div>
-              <span className="text-xs font-mono text-cyan-400">
-                Token {currentStep} of {maxSteps}
+        <div className="lg:col-span-6 space-y-3.5">
+          <div className="bg-[#0b111a] border border-slate-800 rounded p-4">
+            <div className="flex items-center justify-between mb-2.5 text-xs font-mono">
+              <span className="text-slate-300 font-semibold">
+                Sequential Token Ingestion Stream
+              </span>
+              <span className="text-slate-400">
+                Step: <strong className="text-cyan-400">{currentStep}</strong> / {maxSteps}
               </span>
             </div>
 
             {/* Token Tape Visualizer */}
-            <div className="bg-dark-950 p-3 rounded-lg border border-slate-800 flex flex-wrap gap-1.5 min-h-[100px] max-h-[140px] overflow-y-auto">
+            <div className="bg-[#070c14] p-2.5 rounded border border-slate-800/90 flex flex-wrap gap-1 min-h-[90px] max-h-[130px] overflow-y-auto">
               {sampleTokens.slice(0, currentStep).map((tok, idx) => (
                 <span
                   key={idx}
-                  className={`px-2 py-0.5 rounded text-xs font-mono transition-all duration-200 ${
+                  className={`px-2 py-0.5 rounded text-xs font-mono transition-colors ${
                     idx === currentStep - 1
-                      ? 'bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/40 scale-105'
-                      : 'bg-dark-850 text-slate-300 border border-slate-800'
+                      ? 'bg-slate-200 text-slate-950 font-bold'
+                      : 'bg-[#0e1624] text-slate-300 border border-slate-800/80'
                   }`}
                 >
                   {tok}
                 </span>
               ))}
               {currentStep < maxSteps && (
-                <span className="px-2 py-0.5 rounded text-xs font-mono bg-dark-900 text-slate-600 border border-dashed border-slate-800 animate-pulse">
+                <span className="px-2 py-0.5 rounded text-xs font-mono text-slate-600 border border-dashed border-slate-800">
                   ...
                 </span>
               )}
             </div>
 
-            {/* Playback Controls */}
-            <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-800/80">
+            {/* Playback Controls Toolbar */}
+            <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-800/80 text-xs font-mono">
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsPlaying(!isPlaying)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-xs font-medium border border-cyan-500/40 transition-colors"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 transition-colors"
                 >
-                  {isPlaying ? <Pause size={14} /> : <Play size={14} />}
-                  {isPlaying ? 'Pause' : 'Play'}
+                  {isPlaying ? <Pause size={13} /> : <Play size={13} />}
+                  <span>{isPlaying ? 'Pause' : 'Stream'}</span>
                 </button>
                 <button
                   onClick={() => {
                     setIsPlaying(false);
                     setCurrentStep(1);
                   }}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-slate-300 text-xs border border-slate-700 transition-colors"
+                  className="flex items-center gap-1.5 px-2 py-1 rounded bg-[#0b121c] hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition-colors"
                   title="Reset to step 1"
                 >
-                  <RotateCcw size={14} />
-                  Reset
+                  <RotateCcw size={13} />
+                  <span>Reset</span>
                 </button>
               </div>
 
-              {/* Speed Slider */}
-              <div className="flex items-center gap-2 text-xs text-slate-400">
-                <span>Speed:</span>
+              {/* Speed Controller */}
+              <div className="flex items-center gap-2 text-slate-400">
+                <span>Clock:</span>
                 <input
                   type="range"
                   min="100"
@@ -120,74 +124,74 @@ export const Section1MemoryProblem: React.FC<Section1Props> = ({ dimension }) =>
                   step="50"
                   value={speedMs}
                   onChange={(e) => setSpeedMs(Number(e.target.value))}
-                  className="w-24 accent-cyan-500 cursor-pointer"
+                  className="w-20 cursor-pointer"
                 />
-                <span className="font-mono text-slate-300 text-[10px] w-12 text-right">
+                <span className="w-10 text-right tabular-nums text-slate-300">
                   {speedMs}ms
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Architecture Comparison Cards */}
+          {/* Architecture Comparison Panels */}
           <div className="grid grid-cols-2 gap-3">
             {/* Strategy A: Growing KV Cache */}
-            <div className="p-3.5 bg-dark-900 border border-rose-500/30 rounded-xl relative overflow-hidden">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs font-semibold text-rose-400 flex items-center gap-1.5">
-                  <Database size={13} />
-                  Growing KV Cache
+            <div className="p-3 bg-[#0b111a] border border-slate-800 rounded relative">
+              <div className="flex items-center justify-between mb-1 text-xs font-mono">
+                <span className="text-slate-300 font-semibold flex items-center gap-1">
+                  <Database size={12} className="text-rose-400" />
+                  Transformer KV Cache
                 </span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20">
-                  O(T) Memory
+                <span className="text-[10px] text-rose-400">
+                  O(T) growth
                 </span>
               </div>
-              <div className="text-xl font-bold font-mono text-slate-100">
+              <div className="text-lg font-bold font-mono text-slate-100 tabular-nums">
                 {kvBytes.toLocaleString()} <span className="text-xs font-normal text-slate-400">Bytes</span>
               </div>
-              <div className="text-[11px] text-slate-400 mt-1">
-                Allocates {2 * dimension * 4}B for every new token. VRAM explodes on long context.
+              <div className="text-[11px] text-slate-400 mt-0.5 leading-snug">
+                Stores all {currentStep} key-value tokens ($2 \times d$ floats per token).
               </div>
             </div>
 
             {/* Strategy B: Fixed Evolving State */}
-            <div className="p-3.5 bg-dark-900 border border-cyan-500/30 rounded-xl relative overflow-hidden">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs font-semibold text-cyan-400 flex items-center gap-1.5">
-                  <Zap size={13} />
+            <div className="p-3 bg-[#0b111a] border border-slate-800 rounded relative">
+              <div className="flex items-center justify-between mb-1 text-xs font-mono">
+                <span className="text-slate-300 font-semibold flex items-center gap-1">
+                  <Zap size={12} className="text-cyan-400" />
                   Fixed Evolving State
                 </span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
-                  O(1) in T
+                <span className="text-[10px] text-cyan-400">
+                  Fixed in T
                 </span>
               </div>
-              <div className="text-xl font-bold font-mono text-slate-100">
+              <div className="text-lg font-bold font-mono text-slate-100 tabular-nums">
                 {fixedBytes.toLocaleString()} <span className="text-xs font-normal text-slate-400">Bytes</span>
               </div>
-              <div className="text-[11px] text-slate-400 mt-1">
-                Constant {dimension}×{dimension} matrix. Never allocates new slots as T grows.
+              <div className="text-[11px] text-slate-400 mt-0.5 leading-snug">
+                Fixed {dimension}&times;{dimension} matrix. Size is independent of sequence length $T$.
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Scaling Plot & Pedagogical Box */}
-        <div className="lg:col-span-6 space-y-4">
+        {/* Right Column: Scaling Plot & Research Discussion */}
+        <div className="lg:col-span-6 space-y-3.5">
           <MemoryGrowthChart
             currentStep={currentStep}
             maxSteps={maxSteps}
             dimension={dimension}
           />
 
-          <div className="p-3.5 bg-dark-900/60 border border-slate-800 rounded-xl text-xs text-slate-300 leading-relaxed space-y-1.5">
-            <span className="text-cyan-400 font-semibold font-mono block text-[11px] uppercase tracking-wider">
-              Core Technical Trade-off
+          <div className="border-l-2 border-slate-700 bg-[#070c14] p-3 text-xs text-slate-300 leading-relaxed space-y-1">
+            <span className="text-slate-400 font-semibold font-mono block text-[10px] uppercase tracking-wider">
+              Research Takeaway: The Long-Context Memory Wall
             </span>
             <p>
-              Transformers preserve exact historical tokens by storing every Key-Value pair in high-bandwidth GPU memory. As sequences reach 100,000+ tokens, the KV cache requires tens of gigabytes per concurrent user.
+              Standard Transformers preserve historical sequence context by appending key-value vectors to an external cache. At scale, serving long-context requests across concurrent users creates prohibitive VRAM bandwidth bottlenecks.
             </p>
             <p>
-              An <strong>evolving recurrent state</strong> avoids this memory wall by fusing every new token into a fixed-size internal representation. But this creates a new challenge: <em>how does a finite state store infinite information without overwriting itself?</em>
+              Recurrent state models and Pathway&apos;s <strong>Dragon Hatchling (BDH)</strong> circumvent cache growth by compressing context into internal synaptic state. However, because a finite-dimensional state cannot hold unbounded information, <em>subspace interference and forgetting become the fundamental limiting factors</em>.
             </p>
           </div>
         </div>

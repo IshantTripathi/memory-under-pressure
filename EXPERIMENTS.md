@@ -83,7 +83,7 @@ This document records five repeatable benchmark experiments conducted with the d
   - Signal-to-Noise Ratio (SNR): `-8.46 dB`
   - Top-1 Cosine Similarity: `0.6421` (Matching distractor attribute)
 * **Scientific Interpretation:**
-  - Falsification confirmed: fixed-size state cannot retain infinite facts under unweighted linear superposition. Cross-talk produces catastrophic forgetting of early context.
+  - Falsification confirmed: a fixed-size evolving state cannot retain an arbitrary number of superposed facts under unweighted linear superposition when sequence length exceeds dimensional and key capacity. Cross-talk produces catastrophic forgetting of early context.
 
 ---
 

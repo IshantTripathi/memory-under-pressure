@@ -8,13 +8,13 @@ This project is built exclusively with open-source software, permissible fonts, 
 
 | Package | Version | Purpose | License | Source |
 | :--- | :--- | :--- | :--- | :--- |
-| `react` | `^19.0.0` | UI Rendering Engine | MIT | [npmjs.com/package/react](https://www.npmjs.com/package/react) |
-| `react-dom` | `^19.0.0` | DOM Bindings | MIT | [npmjs.com/package/react-dom](https://www.npmjs.com/package/react-dom) |
-| `vite` | `^6.0.0` | Build Tool & Dev Server | MIT | [github.com/vitejs/vite](https://github.com/vitejs/vite) |
+| `react` | `^19.2.8` | UI Rendering Engine | MIT | [npmjs.com/package/react](https://www.npmjs.com/package/react) |
+| `react-dom` | `^19.2.8` | DOM Bindings | MIT | [npmjs.com/package/react-dom](https://www.npmjs.com/package/react-dom) |
+| `vite` | `^8.2.2` | Build Tool & Dev Server | MIT | [github.com/vitejs/vite](https://github.com/vitejs/vite) |
 | `tailwindcss` | `^3.4.17` | Utility-First CSS | MIT | [github.com/tailwindlabs/tailwindcss](https://github.com/tailwindlabs/tailwindcss) |
-| `lucide-react` | `^1.16.0` | Technical SVG Icons | ISC | [lucide.dev](https://lucide.dev) |
-| `vitest` | `^3.0.0` | Automated Unit Test Runner | MIT | [vitest.dev](https://vitest.dev) |
-| `typescript` | `~5.7.2` | Type-Safe Language Runtime | Apache 2.0 | [github.com/microsoft/TypeScript](https://github.com/microsoft/TypeScript) |
+| `lucide-react` | `^1.43.0` | Technical SVG Icons | ISC | [lucide.dev](https://lucide.dev) |
+| `vitest` | `^5.0.0` | Automated Unit Test Runner | MIT | [vitest.dev](https://vitest.dev) |
+| `typescript` | `~6.0.2` | Type-Safe Language Runtime | Apache 2.0 | [github.com/microsoft/TypeScript](https://github.com/microsoft/TypeScript) |
 
 ---
 

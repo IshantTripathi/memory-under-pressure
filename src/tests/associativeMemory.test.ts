@@ -27,6 +27,34 @@ describe('Associative Memory Mathematical Engine', () => {
     expect(result.signalToNoiseDb).toBeGreaterThan(10);
   });
 
+  it('guarantees strictly zero cross-talk noise for clean orthogonal baseline (T=5, d=16)', () => {
+    const { facts, codebook } = generateFactSequence(5, 16, 0, 0, 42);
+    // Verify mutual orthogonality of distinct fact keys
+    for (let i = 0; i < facts.length; i++) {
+      for (let j = i + 1; j < facts.length; j++) {
+        if (facts[i].key !== facts[j].key) {
+          const dot = facts[i].keyVector.reduce((sum, v, k) => sum + v * facts[j].keyVector[k], 0);
+          expect(Math.abs(dot)).toBeLessThan(1e-6);
+        }
+      }
+    }
+
+    let state = initAssociativeState(16, 1.0, 1.0);
+    for (const f of facts) {
+      state = updateAssociativeState(state, f.keyVector, f.valueVector, 'hebbian');
+    }
+
+    const queryKey = 'Color';
+    const queryVec = codebook.keyVectors.get(queryKey)!;
+    const result = queryAssociativeMemory(state, queryVec, queryKey, facts, codebook.vocabulary);
+
+    expect(result.isCorrect).toBe(true);
+    expect(result.expectedValue).toBe('Cyan');
+    expect(result.predictedValue).toBe('Cyan');
+    expect(result.noiseNorm).toBeLessThan(1e-6);
+    expect(result.signalToNoiseDb).toBe(90); // numerical ceiling
+  });
+
   it('demonstrates recency decay when lambda < 1.0', () => {
     const { facts, codebook } = generateFactSequence(20, 16, 0, 0, 42);
     // Leaky state with decay 0.85

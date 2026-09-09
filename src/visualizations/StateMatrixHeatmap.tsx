@@ -29,7 +29,7 @@ export const StateMatrixHeatmap: React.FC<StateMatrixHeatmapProps> = ({
   }
 
   return (
-    <div className="flex flex-col items-center bg-dark-900 border border-slate-800 rounded-xl p-4 shadow-xl">
+    <div className="flex flex-col items-center bg-[#0b111a] border border-slate-800 rounded p-4">
       <div className="w-full flex items-center justify-between mb-3 text-xs">
         <div className="flex items-center gap-2">
           <span className="font-mono text-cyan-400 font-semibold tracking-wider">S_{step}</span>
@@ -37,7 +37,7 @@ export const StateMatrixHeatmap: React.FC<StateMatrixHeatmapProps> = ({
         </div>
         <div className="flex items-center gap-3">
           <span className="text-slate-400 font-mono">
-            ||S||_F: <span className="text-slate-200 font-semibold">{frobeniusNorm.toFixed(2)}</span>
+            ||S||_F: <span className="text-slate-200 font-semibold tabular-nums">{frobeniusNorm.toFixed(2)}</span>
           </span>
           <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">
             Rank ≤ {dimension}
@@ -47,7 +47,7 @@ export const StateMatrixHeatmap: React.FC<StateMatrixHeatmapProps> = ({
 
       {/* 2D Heatmap Grid */}
       <div 
-        className="grid gap-1 p-2 bg-dark-950/80 rounded-lg border border-slate-800/80"
+        className="grid gap-1 p-2 bg-[#080d14] rounded border border-slate-800"
         style={{
           gridTemplateColumns: `repeat(${dimension}, minmax(0, 1fr))`,
           maxWidth: dimension > 32 ? '420px' : dimension > 16 ? '360px' : '280px',
@@ -82,13 +82,13 @@ export const StateMatrixHeatmap: React.FC<StateMatrixHeatmapProps> = ({
       </div>
 
       {/* Hover Inspect Tooltip */}
-      <div className="w-full mt-3 px-3 py-1.5 bg-dark-850 rounded border border-slate-800 flex items-center justify-between text-xs font-mono">
+      <div className="w-full mt-3 px-3 py-1.5 bg-[#080d14] rounded border border-slate-800 flex items-center justify-between text-xs font-mono">
         {hoveredCell ? (
           <>
             <span className="text-slate-400">
               Cell S[{hoveredCell.row}, {hoveredCell.col}]:
             </span>
-            <span className={`font-semibold ${hoveredCell.val >= 0 ? 'text-cyan-400' : 'text-rose-400'}`}>
+            <span className={`font-semibold tabular-nums ${hoveredCell.val >= 0 ? 'text-cyan-400' : 'text-rose-400'}`}>
               {hoveredCell.val.toFixed(4)}
             </span>
           </>

@@ -22,13 +22,13 @@ export const DIAGNOSTIC_QUESTIONS: DiagnosticQuestion[] = [
       {
         id: 'C',
         text: 'The memory footprint in GPU VRAM increases by 50x.',
-        explanation: 'Incorrect. For a fixed-size evolving state, memory footprint is O(d^2) = O(1) with respect to sequence length T. Only a KV cache grows by 50x.',
+        explanation: 'Incorrect. For a fixed-size evolving state, memory footprint is O(d^2) and remains fixed with respect to sequence length T for a fixed model configuration. Only a KV cache grows by 50x.',
         isCorrect: false,
       },
       {
         id: 'D',
         text: 'The model outputs an out-of-memory (OOM) error.',
-        explanation: 'Incorrect. Fixed-size states prevent OOM errors entirely, but trade away retrieval fidelity when capacity is overwhelmed.',
+        explanation: 'Incorrect. The recurrent state itself maintains a fixed footprint that does not grow with sequence length T, avoiding sequence-length OOM from cached tokens, but the overall system can still run out of memory for other reasons (e.g. batch size, activations, or model parameters). Under sequence pressure, the recurrent state trades away retrieval fidelity through cross-talk interference.',
         isCorrect: false,
       }
     ],
@@ -43,19 +43,19 @@ export const DIAGNOSTIC_QUESTIONS: DiagnosticQuestion[] = [
     id: 2,
     title: 'Selective Forgetting & The Recency Trade-off',
     scenario: 'An engineer sets the state update rule to S_t = 0.90 * S_{t-1} + v_t * k_t^T (decay λ = 0.90) to prevent state weights from exploding over long sequences. The first fact is stored at step 1; 30 subsequent tokens arrive.',
-    question: 'What is the mathematical fate of the first stored fact at step 31?',
+    question: 'What happens to the first fact when queried at step 31?',
     options: [
       {
         id: 'A',
-        text: 'Its effective signal magnitude is attenuated by λ^30 ≈ 0.042 (over 95% signal loss).',
-        explanation: 'Correct! The decay factor λ acts as an exponential discount: signal weight scales as λ^(t - t_fact). Early facts suffer exponential forgetting (recency bias).',
-        isCorrect: true,
+        text: 'The first fact is perfectly preserved at full signal amplitude.',
+        explanation: 'Incorrect. Each decay step attenuates the signal component by factor λ. Over 30 steps, signal norm drops to 0.90^30 ≈ 0.042 (over 95% attenuation).',
+        isCorrect: false,
       },
       {
         id: 'B',
-        text: 'The fact remains at 100% strength because associative memories do not experience decay.',
-        explanation: 'Incorrect. The decay factor λ=0.90 explicitly multiplies the entire preceding matrix at every timestep.',
-        isCorrect: false,
+        text: 'The signal norm decays to ~4% of its original magnitude (0.90^30), causing recency amnesia.',
+        explanation: 'Correct! Exponential decay stabilizes long-term norm growth, but creates an unavoidable recency bias where early facts are progressively erased.',
+        isCorrect: true,
       },
       {
         id: 'C',
@@ -65,8 +65,8 @@ export const DIAGNOSTIC_QUESTIONS: DiagnosticQuestion[] = [
       },
       {
         id: 'D',
-        text: 'The model achieves infinite context window with zero information loss.',
-        explanation: 'Incorrect. Decay solves numerical explosion, but directly causes selective forgetting of early context.',
+        text: 'The model retains every earlier fact with zero information loss regardless of sequence length.',
+        explanation: 'Incorrect. While decay stabilizes state magnitude, multiplying by λ < 1 causes earlier facts to decay exponentially as λ^t, inducing selective forgetting of early context.',
         isCorrect: false,
       }
     ],
@@ -92,7 +92,7 @@ export const DIAGNOSTIC_QUESTIONS: DiagnosticQuestion[] = [
       {
         id: 'B',
         text: 'Demonstrations update its recurrent memory, and reasoning is performed iteratively in latent space without generating verbalized tokens.',
-        explanation: 'Correct! BDH-CQ in-context demonstrations continuously update recurrent memory; iterative reasoning occurs directly within high-dimensional latent space at O(1) token overhead.',
+        explanation: 'Correct! BDH-CQ in-context demonstrations continuously update recurrent memory; iterative reasoning occurs directly within high-dimensional latent space without emitting intermediate reasoning tokens.',
         isCorrect: true,
       },
       {
