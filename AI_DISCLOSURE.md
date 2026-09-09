@@ -19,7 +19,7 @@ In full accordance with competition transparency requirements, this document out
 
 ### C. Software Engineering & Implementation
 * **Assistance Used:** AI pair-programming was utilized to scaffold the React + TypeScript + Tailwind CSS project structure, generate vector math helper functions (dot product, outer product, power iteration singular value decomposition), and assemble UI components.
-* **Verification:** Every mathematical formula was verified with an automated unit test suite in Vitest (`npm run test`), confirming algebraic correctness, energy conservation, and deterministic PRNG behavior.
+* **Verification:** The core mathematical routines for vector algebra, outer-product recurrence, Frobenius norm energy conservation, SNR decomposition, and PRNG determinism are validated via an automated unit test suite in Vitest (`npm test`, 12 passing tests), confirming algebraic correctness, energy conservation, and deterministic PRNG behavior.
 
 ### D. Technical Writing & Documentation
 * **Assistance Used:** AI tools assisted in drafting initial prose for the README, concept summary, and experiment logs.
