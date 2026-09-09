@@ -151,7 +151,7 @@ export const Section10SummaryModal: React.FC<SummaryModalProps> = ({ isOpen, onC
               5. Limitations & Research Provenance
             </h3>
             <p>
-              Linear state recurrence guarantees constant memory, but cannot match the non-linear selective addressing of Softmax attention when key distributions are clustered. Furthermore, exponential decay <code className="font-mono">λ &lt; 1.0</code> avoids numerical overflow but trades away long-term retention via recency amnesia. Our in-browser simulator demonstrates these principles on an educational associative matrix model, grounded in published findings from:
+              A finite matrix state cannot represent arbitrarily many independent associations without interference as sequence length grows relative to state dimension. Furthermore, in this recurrence, exponential decay factor <code className="font-mono">λ &lt; 1.0</code> attenuates older state contributions to prevent unbounded accumulation, but trades away long-term retention via recency amnesia. Our in-browser simulator demonstrates these principles on an educational model using an explicit 2D matrix of size d×d, grounded in published findings from:
             </p>
             <ul className="list-disc pl-4 space-y-1 text-[11px] font-mono text-slate-400 print:text-gray-700">
               <li>Pathway (2025): <em>The Dragon Hatchling: The Missing Link between the Transformer and Models of the Brain</em> (arXiv:2509.26507).</li>

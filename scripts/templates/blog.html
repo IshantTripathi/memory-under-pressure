@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Memory Under Pressure — Educational Blog</title>
+<style>
+  @page {
+    size: letter;
+    margin: 0.75in 0.75in 0.75in 0.75in;
+    @bottom-center {
+      content: "Page " counter(page);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 8pt;
+      color: #64748b;
+    }
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #0f172a;
+    background: #ffffff;
+    line-height: 1.55;
+    font-size: 9.5pt;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Document Header */
+  .doc-header {
+    border-bottom: 2px solid #0284c7;
+    padding-bottom: 14pt;
+    margin-bottom: 20pt;
+  }
+  .doc-badge {
+    display: inline-block;
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    padding: 2.5pt 8pt;
+    border-radius: 3pt;
+    margin-bottom: 8pt;
+  }
+  .doc-title {
+    font-size: 20pt;
+    font-weight: 800;
+    line-height: 1.25;
+    color: #0f172a;
+    margin: 0 0 8pt 0;
+  }
+  .doc-subtitle {
+    font-size: 11pt;
+    color: #475569;
+    font-weight: 500;
+    margin: 0 0 12pt 0;
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6pt 16pt;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4pt;
+    padding: 8pt 12pt;
+    font-size: 8.5pt;
+  }
+  .meta-item strong {
+    color: #334155;
+  }
+  .meta-item a {
+    color: #0284c7;
+    text-decoration: none;
+  }
+
+  /* Headings */
+  h2 {
+    font-size: 12.5pt;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 18pt 0 6pt 0;
+    padding-bottom: 3pt;
+    border-bottom: 1px solid #cbd5e1;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 12pt 0 4pt 0;
+    page-break-after: avoid;
+  }
+  p {
+    margin: 0 0 8pt 0;
+    text-align: justify;
+  }
+
+  /* Callouts & Quotes */
+  blockquote {
+    margin: 10pt 0;
+    padding: 8pt 12pt;
+    background: #f0f9ff;
+    border-left: 3.5px solid #0284c7;
+    border-radius: 0 4pt 4pt 0;
+    font-size: 9.5pt;
+    font-weight: 500;
+    color: #0369a1;
+  }
+  .callout-rule {
+    margin: 10pt 0;
+    padding: 7pt 10pt;
+    background: #fefce8;
+    border: 1px solid #fef08a;
+    border-left: 3.5px solid #ca8a04;
+    border-radius: 3pt;
+    font-size: 8.5pt;
+    color: #854d0e;
+  }
+  .callout-info {
+    margin: 10pt 0;
+    padding: 7pt 10pt;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 3.5px solid #64748b;
+    border-radius: 3pt;
+    font-size: 8.5pt;
+    color: #334155;
+  }
+
+  /* Equations */
+  .math-block {
+    text-align: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4pt;
+    padding: 7pt 10pt;
+    margin: 8pt 0;
+    font-family: "Cambria Math", "Times New Roman", Times, serif;
+    font-size: 10.5pt;
+    color: #0f172a;
+    page-break-inside: avoid;
+  }
+  .math-inline {
+    font-family: "Cambria Math", "Times New Roman", Times, serif;
+    font-style: italic;
+    font-size: 9.5pt;
+  }
+  code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 8.5pt;
+    background: #f1f5f9;
+    padding: 1.5pt 3pt;
+    border-radius: 2pt;
+    color: #0f172a;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10pt 0;
+    font-size: 8pt;
+    page-break-inside: avoid;
+  }
+  th {
+    background: #f1f5f9;
+    color: #1e293b;
+    font-weight: 700;
+    text-align: left;
+    padding: 5pt 7pt;
+    border: 1px solid #cbd5e1;
+  }
+  td {
+    padding: 5pt 7pt;
+    border: 1px solid #e2e8f0;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+
+  /* Lists */
+  ul, ol {
+    margin: 0 0 8pt 0;
+    padding-left: 18pt;
+  }
+  li {
+    margin-bottom: 3pt;
+  }
+
+  /* References */
+  .ref-list {
+    margin: 0;
+    padding-left: 14pt;
+    font-size: 8pt;
+    line-height: 1.45;
+  }
+  .ref-list li {
+    margin-bottom: 4pt;
+  }
+  .ref-list a {
+    color: #0284c7;
+    text-decoration: none;
+  }
+
+  .footer-counter {
+    text-align: right;
+    font-size: 7.5pt;
+    color: #94a3b8;
+    margin-top: 15pt;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 4pt;
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <div class="doc-badge">DataForge 2026 — Pathway Track &bull; Explain the Frontier</div>
+  <h1 class="doc-title">Memory Under Pressure</h1>
+  <div class="doc-subtitle">How Fixed-Size State Remembers, Updates, Interferes and Forgets Across Long Sequences</div>
+  <div class="meta-grid">
+    <div class="meta-item"><strong>Competition Track:</strong> Pathway Track (Explain the Frontier)</div>
+    <div class="meta-item"><strong>Project:</strong> Memory Under Pressure</div>
+    <div class="meta-item"><strong>Interactive Artifact:</strong> <a href="https://memory-under-pressure-flax.vercel.app">https://memory-under-pressure-flax.vercel.app</a></div>
+    <div class="meta-item"><strong>Source Repository:</strong> <a href="https://github.com/IshantTripathi/memory-under-pressure">github.com/IshantTripathi/memory-under-pressure</a></div>
+  </div>
+</div>
+
+<h2>1. Why Long Context Creates a Memory Problem</h2>
+<p>
+In contemporary Large Language Models (LLMs) built on standard multi-head attention (the Transformer architecture), context retention relies on an external buffer known as the <strong>Key-Value (KV) Cache</strong>. During autoregressive token generation, every newly processed token generates a key vector <span class="math-inline">k_t &isin; &real;<sup>d</sup></span> and a value vector <span class="math-inline">v_t &isin; &real;<sup>d</sup></span> for each attention layer and head. Because standard attention computes pairwise Softmax dot products between the current query and all historical keys, none of these past vectors can be discarded.
+</p>
+<p>
+As a consequence, the physical memory required to maintain this history grows strictly linearly with sequence length <span class="math-inline">T</span>:
+</p>
+<div class="math-block">
+  KV-Cache Footprint = 2 &times; T &times; d &times; L &times; bytes_per_element
+</div>
+<p>
+where <span class="math-inline">T</span> is sequence length, <span class="math-inline">d</span> is head dimension, and <span class="math-inline">L</span> is layer count. For modern context windows spanning 32,000 to 1,000,000+ tokens, this linear growth in cached-token memory presents severe physical bottlenecks:
+</p>
+<ul>
+  <li><strong>GPU High-Bandwidth Memory (VRAM) Exhaustion:</strong> Maintaining gigabytes of cached activations per concurrent user session exhausts available accelerator memory, bounding serving concurrency.</li>
+  <li><strong>Memory Bandwidth Bottleneck:</strong> In autoregressive decoding, loading hundreds of megabytes of KV vectors from HBM into on-chip SRAM for every single generated token bounds inference throughput to memory bandwidth rather than compute FLOPs.</li>
+  <li><strong>Reasoning Token Overhead:</strong> When frontier models solve complex tasks via extended Chain-of-Thought (CoT), generating thousands of intermediate reasoning tokens compounds KV cache accumulation and drastically elevates serving costs.</li>
+</ul>
+<p>
+This tension motivates a fundamental architectural question: <em>Can a neural system process arbitrarily long token sequences using a memory representation that remains fixed with respect to sequence length T for a fixed model configuration?</em>
+</p>
+
+<h2>2. The Central Falsifiable Claim</h2>
+<p>The educational premise of this project is organized around a single falsifiable technical hypothesis:</p>
+<blockquote>
+  &ldquo;A fixed-size evolving state can process sequences whose duration grows without allocating a new memory slot for every token, but limited state capacity can cause interference and forgetting.&rdquo;
+</blockquote>
+<p>This statement contains two reciprocal assertions:</p>
+<ul>
+  <li><strong>The Promise:</strong> A recurrent model can maintain an internal working memory representation whose size is bounded independently of sequence length <span class="math-inline">T</span> (e.g., an explicit <span class="math-inline">d &times; d</span> matrix state requiring <span class="math-inline">O(d<sup>2</sup>)</span> entries), avoiding per-token buffer allocation.</li>
+  <li><strong>The Physical Constraint:</strong> Because the representation size does not grow with <span class="math-inline">T</span>, incoming facts must share the same finite-dimensional subspace. This superposition inevitably produces cross-talk interference and forces information trade-offs as sequence length grows relative to the available state.</li>
+</ul>
+
+<h2>3. A Minimal Associative Memory Model</h2>
+<p>
+To make the algebraic mechanics of evolving states inspectable in real time, the project implements an <strong>intentionally small educational associative-memory model inspired by the broader family of recurrent and state-based architectures</strong> (such as Linear Transformers, RetNet, RWKV, and Fast Weight Programmers).
+</p>
+<p>
+The model maintains an explicit 2D matrix state <span class="math-inline">S_t &isin; &real;<sup>d &times; d</sup></span>. At each discrete timestep <span class="math-inline">t &isin; {1, 2, &hellip;, T}</span>, the system receives a token representation decomposed into an association pair:
+</p>
+<ul>
+  <li><strong>Key vector:</strong> <span class="math-inline">k_t &isin; &real;<sup>d</sup></span>, normalized such that <span class="math-inline">&Vert;k_t&Vert; = 1</span>, indicating the address or attribute slot.</li>
+  <li><strong>Value vector:</strong> <span class="math-inline">v_t &isin; &real;<sup>d</sup></span>, normalized such that <span class="math-inline">&Vert;v_t&Vert; = 1</span>, encoding the stored content.</li>
+</ul>
+<p>The state matrix updates according to a generalized outer-product recurrent rule:</p>
+<div class="math-block">
+  S<sub>t</sub> = &lambda; S<sub>t-1</sub> + &eta; (v<sub>t</sub> &otimes; k<sub>t</sub><sup>T</sup>)
+</div>
+<p>
+where <span class="math-inline">S_t</span> is the recurrent state matrix initialized to <span class="math-inline">S_0 = 0</span>, <span class="math-inline">&lambda; &isin; [0, 1]</span> is a recency decay factor, <span class="math-inline">&eta; &gt; 0</span> is the update rate (default <span class="math-inline">&eta; = 1.0</span>), and <span class="math-inline">v_t &otimes; k_t^T = v_t k_t^T</span> denotes the outer product of value and key vectors, producing a rank-1 matrix of size <span class="math-inline">d &times; d</span> whose <span class="math-inline">(i, j)</span> entry is <span class="math-inline">v_{t, i} k_{t, j}</span>.
+</p>
+<p>Expanding the recurrence from <span class="math-inline">t = 1</span> to <span class="math-inline">t</span> yields the closed-form representation:</p>
+<div class="math-block">
+  S<sub>t</sub> = &sum;<sub>&tau;=1</sub><sup>t</sup> &lambda;<sup>t-&tau;</sup> &eta; (v<sub>&tau;</sub> k<sub>&tau;</sub><sup>T</sup>)
+</div>
+
+<h2>4. What the State Matrix Actually Stores</h2>
+<p>
+Standard Transformer models store a list of isolated token vectors: <span class="math-inline">[k_1, &hellip;, k_t]</span> and <span class="math-inline">[v_1, &hellip;, v_t]</span>. In contrast, an associative recurrent state stores the <strong>linear superposition of outer products</strong>.
+</p>
+<p>Each individual cell <span class="math-inline">S_{i, j}</span> in the matrix tracks the accumulated correlation between the <span class="math-inline">i</span>-th feature of past values and the <span class="math-inline">j</span>-th feature of past keys:</p>
+<div class="math-block">
+  S<sub>i, j</sub><sup>(t)</sup> = &sum;<sub>&tau;=1</sub><sup>t</sup> &lambda;<sup>t-&tau;</sup> &eta; &middot; v<sub>&tau;, i</sub> &middot; k<sub>&tau;, j</sub>
+</div>
+<p>
+Because matrix addition is commutative and associative, the state acts as an integrated memory canvas:
+</p>
+<ul>
+  <li>Information is distributed across the entire matrix rather than sequestered in distinct token slots.</li>
+  <li>The Frobenius norm <span class="math-inline">&Vert;S_t&Vert;<sub>F</sub> = (&sum;<sub>i,j</sub> S<sub>i,j</sub><sup>2</sup>)<sup>1/2</sup></span> measures accumulated memory energy.</li>
+  <li>Without decay (<span class="math-inline">&lambda; = 1.0</span>), the norm grows monotonically as new facts arrive. With decay (<span class="math-inline">&lambda; &lt; 1.0</span>), the norm stabilizes toward a steady-state bound <span class="math-inline">&Vert;S_&infin;&Vert;<sub>F</sub> &le; &eta; / (1 - &lambda;)</span>.</li>
+</ul>
+
+<h2>5. Retrieval: Asking the State for a Fact</h2>
+<p>To retrieve the value associated with a specific query key probe <span class="math-inline">q &isin; &real;<sup>d</sup></span> (with <span class="math-inline">&Vert;q&Vert; = 1</span>), the model computes a standard matrix-vector product:</p>
+<div class="math-block">
+  v̂ = S<sub>t</sub> q
+</div>
+<p>Substituting the closed-form expansion of <span class="math-inline">S_t</span>:</p>
+<div class="math-block">
+  v̂ = (&sum;<sub>&tau;=1</sub><sup>t</sup> &lambda;<sup>t-&tau;</sup> &eta; v<sub>&tau;</sub> k<sub>&tau;</sub><sup>T</sup>) q = &sum;<sub>&tau;=1</sub><sup>t</sup> &lambda;<sup>t-&tau;</sup> &eta; v<sub>&tau;</sub> (k<sub>&tau;</sub><sup>T</sup> q)
+</div>
+<p>
+Notice the associative re-grouping: because matrix multiplication is associative, <span class="math-inline">(v_&tau; k_&tau;^T) q = v_&tau; (k_&tau;^T q)</span>. The scalar dot product <span class="math-inline">k_&tau;^T q</span> measures cosine similarity between the query probe <span class="math-inline">q</span> and each historical key <span class="math-inline">k_&tau;</span>. The retrieved vector <span class="math-inline">v̂ &isin; &real;<sup>d</sup></span> is thus a linear combination of all stored value vectors, weighted by key similarity and recency attenuation. Discrete fact classification is performed by nearest-neighbor codebook lookup:
+</p>
+<div class="math-block">
+  predicted_value = arg max<sub>c &isin; V</sub> ( v̂<sup>T</sup> v<sub>c</sub> / (&Vert;v̂&Vert; &Vert;v<sub>c</sub>&Vert;) )
+</div>
+
+<h2>6. Signal, Noise and Interference</h2>
+<p>When querying memory for a specific target fact injected at step <span class="math-inline">t<sub>target</sub></span> with key <span class="math-inline">k<sub>target</sub></span> and value <span class="math-inline">v<sub>target</sub></span>, the output decomposes analytically into two orthogonal parts:</p>
+<div class="math-block">
+  v̂ = &lambda;<sup>t - t<sub>target</sub></sup> &eta; (k<sub>target</sub><sup>T</sup> q) v<sub>target</sub> &nbsp;+&nbsp; &sum;<sub>&tau; &ne; t<sub>target</sub></sub> &lambda;<sup>t-&tau;</sup> &eta; (k<sub>&tau;</sub><sup>T</sup> q) v<sub>&tau;</sub>
+  <br>
+  v̂ = [Target Signal Vector s] + [Cross-Talk Noise Vector n]
+</div>
+<ul>
+  <li><strong>Target Signal (<span class="math-inline">s</span>):</strong> The component aligned with <span class="math-inline">v<sub>target</sub></span>. For an exact probe (<span class="math-inline">q = k<sub>target</sub></span>), signal norm is <span class="math-inline">&Vert;s&Vert; = &lambda;<sup>t - t<sub>target</sub></sup> &eta;</span>.</li>
+  <li><strong>Cross-Talk Noise (<span class="math-inline">n</span>):</strong> The vector sum of all other historical values, each scaled by <span class="math-inline">k_&tau;^T q</span>. Whenever historical keys are non-orthogonal to the query, a fraction of their value leaks into the retrieval.</li>
+</ul>
+<p>We quantify retrieval fidelity via the Signal-to-Noise Ratio (SNR) in decibels:</p>
+<div class="math-block">
+  SNR<sub>dB</sub> = 10 &middot; log<sub>10</sub> ( &Vert;s&Vert;<sup>2</sup> / (&Vert;n&Vert;<sup>2</sup> + &epsilon;) )
+</div>
+<ul>
+  <li><strong><span class="math-inline">SNR &gt; +15 dB</span> (High Fidelity):</span> Target signal completely dominates noise. Nearest-neighbor decoding reliably identifies the correct fact.</li>
+  <li><strong><span class="math-inline">0 dB &le; SNR &le; +10 dB</span> (Degraded / Borderline):</span> Noise distorts the retrieved vector. Classification margins shrink, risking misclassification.</li>
+  <li><strong><span class="math-inline">SNR &lt; 0 dB</span> (Interference Collapse):</span> Cross-talk noise exceeds signal (<span class="math-inline">&Vert;n&Vert; &gt; &Vert;s&Vert;</span>). The model predicts a spurious distractor fact.</li>
+</ul>
+
+<h2>7. Why Capacity Depends on State Dimension</h2>
+<p>Linear algebra's dimension theorem governs the capacity of fixed-size associative states:</p>
+<ul>
+  <li><strong>Orthogonal Subspace Bound:</strong> In <span class="math-inline">&real;<sup>d</sup></span>, at most <span class="math-inline">d</span> non-zero vectors can be mutually orthogonal (<span class="math-inline">k_i^T k_j = 0</span> for all <span class="math-inline">i &ne; j</span>).</li>
+  <li><strong>Zero Cross-Talk Regime (<span class="math-inline">T &le; d</span>):</strong> If <span class="math-inline">T &le; d</span> and keys form an orthonormal set, then for <span class="math-inline">q = k<sub>target</sub></span>, <span class="math-inline">k_&tau;^T q = 0</span> for all <span class="math-inline">&tau; &ne; target</span>. The noise vector is identically zero: <span class="math-inline">n = 0 &rArr; SNR &rarr; &infin;</span>.</li>
+  <li><strong>Superposition Saturation (<span class="math-inline">T &gt; d</span>):</strong> When sequence length <span class="math-inline">T</span> exceeds dimension <span class="math-inline">d</span>, incoming keys are guaranteed to be linearly dependent on previous keys. Cross-talk noise becomes mathematically unavoidable.</li>
+  <li><strong>Rank Bottleneck:</strong> The matrix <span class="math-inline">S_t &isin; &real;<sup>d &times; d</sup></span> has rank at most <span class="math-inline">min(d, T)</span>, saturating at <span class="math-inline">d</span>. Further updates overwrite existing directional subspaces.</li>
+</ul>
+
+<h2>8. Decay and Forgetting</h2>
+<p>
+In this toy recurrence, setting <span class="math-inline">&lambda; &lt; 1.0</span> attenuates older state contributions and helps prevent unbounded accumulation. However, it imposes an <strong>exponential recency amnesia</strong>. A fact stored at step <span class="math-inline">&tau;</span> has its signal multiplied by <span class="math-inline">&lambda;</span> at every subsequent step:
+</p>
+<div class="math-block">
+  &Vert;s(&tau;, t)&Vert; = &lambda;<sup>t - &tau;</sup> &eta;
+</div>
+<p>
+For example, with <span class="math-inline">&lambda; = 0.90</span>, an item stored 30 steps ago retains only <span class="math-inline">0.90<sup>30</sup> &approx; 0.042</span> (a 95.8% signal reduction). While recent items remain crisp, early context is effectively erased.
+</p>
+
+<h2>9. Key Correlation and Information Leakage</h2>
+<p>
+In real-world text, token embeddings are clustered on semantic submanifolds with non-zero mutual cosine similarities (<span class="math-inline">&rho; = k_i^T k_j &gt; 0</span>). When keys correlate, distractor tokens leak a fraction <span class="math-inline">&rho;_&tau;</span> of their values directly into the output. Correlated keys can induce retrieval leakage even when the state dimension is large, depending on the update and retrieval conditions. Usable memory capacity is thus constrained not only by dimension <span class="math-inline">d</span>, but also by the geometric angular separation of input keys.
+</p>
+
+<h2>10. Interactive Experiments in Memory Under Pressure</h2>
+<p>
+The repository's interactive simulator exposes 6 deterministic presets (using the Mulberry32 PRNG with seed 42) that demonstrate these theoretical phase transitions:
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Preset Name</th>
+      <th>Configuration</th>
+      <th>Theoretical Prediction</th>
+      <th>Empirical Outcome</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Clean Baseline</strong></td>
+      <td>T=5, d=16, &lambda;=1.00, &rho;=0.00</td>
+      <td>Orthogonal regime (T &lt; d). Keys mutually perpendicular.</td>
+      <td>Noise = 0.000, SNR = +90.00 dB (ceiling), 100% exact retrieval.</td>
+    </tr>
+    <tr>
+      <td><strong>Capacity Threshold</strong></td>
+      <td>T=16, d=16, &lambda;=1.00, &rho;=0.10</td>
+      <td>Dimension bound (T = d). Matrix approaches full rank.</td>
+      <td>Noise = 0.452, SNR = +6.90 dB, target retrieved with reduced margin.</td>
+    </tr>
+    <tr>
+      <td><strong>Severe Saturation</strong></td>
+      <td>T=60, d=8, &lambda;=1.00, &sigma;=0.05</td>
+      <td>Superposition saturation (T = 7.5 d). Noise exceeds signal.</td>
+      <td>Noise = 2.648, SNR = -8.46 dB, retrieval fails (predicts distractor).</td>
+    </tr>
+    <tr>
+      <td><strong>Selective Decay</strong></td>
+      <td>T=35, d=16, &lambda;=0.92, &rho;=0.00</td>
+      <td>Early fact (t=1) attenuated by 0.92<sup>34</sup> &approx; 0.059.</td>
+      <td>Signal attenuated by 94.1%, SNR = -16.27 dB, recency amnesia.</td>
+    </tr>
+    <tr>
+      <td><strong>Key Collision</strong></td>
+      <td>T=20, d=16, &lambda;=1.00, &rho;=0.70</td>
+      <td>Correlated keys leak energy regardless of state size.</td>
+      <td>Noise = 3.142, SNR = -9.94 dB, severe directional interference.</td>
+    </tr>
+    <tr>
+      <td><strong>Break-It Stress</strong></td>
+      <td>T=250, d=8, &lambda;=0.99, &sigma;=0.15</td>
+      <td>Catastrophic overload: 250 facts in 8&times;8 matrix.</td>
+      <td>Empirical phase-transition curve shows accuracy drop from 100% to &lt;10%.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>11. The Failure Cases</h2>
+<p>The project explicitly documents the architectural limitations of linear associative memory:</p>
+<ol>
+  <li><strong>Finite-Rank Saturation:</strong> An associative state matrix <span class="math-inline">S &isin; &real;<sup>d &times; d</sup></span> has rank at most <span class="math-inline">d</span>. A finite matrix state cannot represent arbitrarily many independent associations without interference as the number of stored associations grows relative to the available state.</li>
+  <li><strong>The Leaky State Dilemma:</strong> In this recurrence, setting <span class="math-inline">&lambda; &lt; 1.0</span> attenuates older state contributions and helps prevent unbounded state accumulation over long sequences. However, this creates an exponential forgetting horizon where signals scale as <span class="math-inline">&lambda;<sup>t</sup></span>, inducing recency amnesia.</li>
+  <li><strong>Quasi-Orthogonality in Real Text:</strong> Natural language embeddings occupy dense semantic clusters, causing cross-talk far earlier than idealized orthogonal synthetic benchmarks.</li>
+  <li><strong>Linear vs. Non-Linear Selectivity:</strong> Unlike Softmax attention which exponentiates dot products to suppress distractors, linear associative recall sums projections directly, allowing small noise components to accumulate.</li>
+  <li><strong>Educational Toy vs. Frontier Architectures:</strong> The simulator uses an explicit 2D matrix of size <span class="math-inline">d &times; d</span> to make linear algebra inspectable. Production architectures employ multi-layer deep states, non-linear activation functions, input-dependent gating, and multi-head projections.</li>
+</ol>
+
+<h2>12. Connection to Dragon Hatchling (BDH)</h2>
+<p>
+How does frontier AI research address the representational limits of linear recurrence? In 2025, researchers at Pathway introduced <strong>Dragon Hatchling (BDH, arXiv:2509.26507)</strong>. BDH is a bio-inspired Post-Transformer architecture designed to bridge the gap between artificial attention mechanisms and neuroscience models of the brain.
+</p>
+<p>It is vital to understand the pedagogical relationship:</p>
+<ul>
+  <li><strong>The toy model in this repository is NOT official BDH.</strong> The repository uses a minimal associative outer-product matrix to teach foundational concepts of fixed-state memory, subspace capacity, and interference.</li>
+  <li><strong>BDH is a much richer architecture:</strong> Instead of an unconstrained dense outer-product matrix, BDH models the network as a scale-free graph of locally interacting &ldquo;neuron particles.&rdquo;</li>
+  <li><strong>Hebbian Plasticity (<span class="math-inline">Q = K</span>):</strong> In biological neuroscience, Donald Hebb&rsquo;s rule states: <em>&ldquo;Neurons that fire together, wire together.&rdquo;</em> BDH constrains queries and keys to identical projections (<span class="math-inline">Q = K</span>) derived from sparse, non-negative activations (ReLU). The resulting attention matrix is directly interpretable as dynamic synaptic weights.</li>
+  <li><strong>In-Context Plasticity:</strong> During inference, BDH updates synaptic connections dynamically without backpropagation or weight fine-tuning, allowing the network to adapt to demonstration streams while maintaining a fixed internal state representation.</li>
+</ul>
+
+<h2>13. BDH-CQ and Demonstration-Based Reasoning</h2>
+<p>
+In August 2026, Pathway researchers introduced <strong>BDH-CQ (arXiv:2608.09888)</strong>, extending Dragon Hatchling to long-horizon demonstration learning and iterative reasoning.
+</p>
+<p>
+In conventional LLMs, complex reasoning requires generating extended verbal Chain-of-Thought (CoT) text tokens. Each generated token must be appended to the KV cache, driving inference cost and latency up quadratically with reasoning depth. BDH-CQ introduces two distinct innovations:
+</p>
+<ol>
+  <li><strong>Recurrent In-Context Demo Ingestion:</strong> In-context demonstrations update the model&rsquo;s recurrent synaptic memory at inference time without gradient fine-tuning.</li>
+  <li><strong>Latent Workspace Recurrence:</strong> Rather than emitting hundreds of verbal tokens to solve multi-step reasoning queries, BDH-CQ performs iterative recurrence directly within high-dimensional latent space (<span class="math-inline">z_k = step(z_{k-1}, S_t)</span>). Reasoning occurs in latent state representations without text token emission.</li>
+</ol>
+
+<h3>Verified Published Benchmark Evidence</h3>
+<p>On the public ARC-AGI-1 evaluation set, published research results for BDH-CQ report:</p>
+<ul>
+  <li><strong>Model Scale:</strong> Approximately 150 million parameters (150M).</li>
+  <li><strong>Reasoning Accuracy:</strong> <strong>29.5% pass@2</strong> on the public ARC-AGI-1 evaluation set.</li>
+  <li><strong>Inference Cost:</strong> <strong>$0.0007 per task</strong> (under one-tenth of a cent).</li>
+  <li><strong>Citation:</strong> Engdahl et al. (Pathway), <em>BDH-CQ: In-Context Learning with Recurrent Latent Reasoning</em>, arXiv:2608.09888 (August 2026).</li>
+</ul>
+<div class="callout-info">
+  <strong>Transparency Demarcation:</strong> This result is cited directly from primary published literature as a reported cost-efficiency Pareto point on the public benchmark. It is not presented as the highest raw-accuracy system on ARC-AGI, nor is the educational toy simulator in this repository an implementation of BDH-CQ.
+</div>
+
+<h2>14. Comparing Fixed-State Memory with Attention/KV Caches</h2>
+<p>To place evolving states in proper context, we compare five distinct sequence-processing paradigms:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dimension</th>
+      <th>Standard Transformer (KV Cache)</th>
+      <th>Recurrent Vector (RNN / GRU)</th>
+      <th>Linear Attention / SSM (RetNet, Mamba)</th>
+      <th>Dragon Hatchling (BDH)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Working Memory Mechanism</strong></td>
+      <td>External buffer of uncompressed key-value vectors</td>
+      <td>Single hidden vector h<sub>t</sub> &isin; &real;<sup>d</sup> updated non-linearly</td>
+      <td>Matrix state S<sub>t</sub> &isin; &real;<sup>d&times;d</sup> or selective state parameters</td>
+      <td>Dynamic synaptic plasticity over scale-free particle graph</td>
+    </tr>
+    <tr>
+      <td><strong>Memory Scaling</strong></td>
+      <td>Linear O(T &middot; d &middot; L) in sequence length T</td>
+      <td>Fixed O(d) with respect to sequence length T</td>
+      <td>Fixed O(d<sup>2</sup>) with respect to sequence length T</td>
+      <td>Fixed with respect to sequence length T for fixed config</td>
+    </tr>
+    <tr>
+      <td><strong>Inference Step Cost</strong></td>
+      <td>O(T) Memory-bandwidth bound (scales with context)</td>
+      <td>O(d<sup>2</sup>) Compute bound (constant per step)</td>
+      <td>O(d<sup>2</sup>) Compute bound (constant per step)</td>
+      <td>Fixed with respect to sequence length T</td>
+    </tr>
+    <tr>
+      <td><strong>Information Retention</strong></td>
+      <td>Exact lossless token storage within context limit</td>
+      <td>Severe bottleneck (compressed into d scalar values)</td>
+      <td>Linear superposition; subject to cross-talk interference</td>
+      <td>Dynamic synaptic adaptation; bounded by latent capacity</td>
+    </tr>
+    <tr>
+      <td><strong>Long-Horizon Failure</strong></td>
+      <td>VRAM out-of-memory (OOM) exhaustion</td>
+      <td>Vanishing gradients / catastrophic forgetting</td>
+      <td>Rank saturation &amp; cross-talk noise (T &gt; d)</td>
+      <td>Synaptic saturation in finite latent workspace</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout-rule">
+  <strong>Scientific Precision Rule:</strong> A fixed-size state keeps the state representation fixed with respect to sequence length for a fixed model configuration, rather than allocating a new memory slot for every token. This does not imply unlimited information capacity or zero information loss.
+</div>
+
+<h2>15. What This Toy Model Does NOT Claim</h2>
+<p>Intellectual honesty requires establishing what our educational simulator does <strong>not</strong> do:</p>
+<ol>
+  <li><strong>Not an Official BDH Implementation:</strong> The simulator is an educational matrix model designed to make the linear algebra of recurrence visible. It does not execute the multi-layer, scale-free particle graph algorithm of BDH.</li>
+  <li><strong>Not a Replacement for Softmax Attention:</strong> The educational model demonstrates that unconstrained linear associative recall cannot achieve the sharp, non-linear selective focus of Softmax attention when key distributions are non-orthogonal.</li>
+  <li><strong>No Infinite Context Without Loss:</strong> The model proves that while fixed-size states can ingest arbitrarily long sequences without memory allocation growth, information retrieval degrades along a predictable capacity curve once sequence length exceeds available subspace dimensions.</li>
+  <li><strong>No Universal OOM Immunity:</strong> While a fixed-size state avoids sequence-length OOM from cached token vectors, an overall system can still exhaust memory due to activation storage, batch size, or parameter footprint.</li>
+</ol>
+
+<h2>16. Evidence and Research Context</h2>
+<p>The concepts taught in this project are grounded in peer-reviewed and preprint literature published between 1982 and 2026:</p>
+<ul>
+  <li><strong>Linear Attention as Fast Weights:</strong> Schlag, Irie, &amp; Schmidhuber (ICML 2021) mathematically established that unnormalized linear Transformers are equivalent to fast-weight recurrent associative memories updating matrix states via outer products.</li>
+  <li><strong>Retention Networks:</strong> Sun et al. (Microsoft Research, 2023) demonstrated that multi-scale retention with explicit exponential decay (<span class="math-inline">&lambda; &lt; 1.0</span>) achieves constant inference memory and linear-time training.</li>
+  <li><strong>Selective State Spaces:</strong> Gu &amp; Dao (2023, Mamba) showed that making recurrent transition matrices input-dependent allows models to selectively filter relevant tokens into compressed states.</li>
+  <li><strong>Synaptic Plasticity &amp; Recurrent Reasoning:</strong> Kosowski et al. (2025, arXiv:2509.26507) and Engdahl et al. (2026, arXiv:2608.09888) demonstrated that Hebbian attention (<span class="math-inline">Q=K</span>) and latent recurrent reasoning achieve remarkable cost-efficiency Pareto trade-offs on challenging reasoning benchmarks.</li>
+</ul>
+
+<h2>17. Reproducibility</h2>
+<p>Every interactive figure, metric, and table in this project is 100% reproducible:</p>
+<ul>
+  <li><strong>Deterministic PRNG:</strong> All synthetic tasks and vector generations use the Mulberry32 pseudorandom generator with fixed seeds (seed 42 for standard benchmarks, seed 555 for diagnostic questions).</li>
+  <li><strong>Automated Unit Testing:</strong> 12 automated unit tests in Vitest verify vector normalization, outer-product algebra, Frobenius norm conservation, SNR decomposition, and singular spectrum computation.</li>
+  <li><strong>Open-Source Codebase:</strong> Complete source code is available on GitHub under the MIT License, with step-by-step reproduction instructions in <code>README.md</code> and detailed experimental logs in <code>EXPERIMENTS.md</code>.</li>
+</ul>
+
+<h2>18. AI Assistance and Disclosure</h2>
+<p>In full accordance with competition transparency guidelines, AI tools were utilized during development for:</p>
+<ul>
+  <li>Scaffolding initial React 19 + TypeScript + Tailwind CSS component templates.</li>
+  <li>Assisting with vector linear algebra helper routines and automated unit test assertions.</li>
+  <li>Editorial feedback on technical writing clarity and formatting.</li>
+</ul>
+<p>
+<strong>Human / Team Ownership:</strong> The human team directed the conceptual scope, selected the central falsifiable claim, structured the 10-module pedagogical progression, audited every mathematical formula and citation against primary sources, established the university laboratory visual design, and executed all verification builds and tests.
+</p>
+
+<h2>19. References</h2>
+<ol class="ref-list">
+  <li><strong>Kosowski, A., Uznański, P., Chorowski, J., Stamirowska, Z., &amp; Bartoszkiewicz, M.</strong> (2025). <em>The Dragon Hatchling: The Missing Link between the Transformer and Models of the Brain</em>. <a href="https://arxiv.org/abs/2509.26507">arXiv:2509.26507</a>.</li>
+  <li><strong>Engdahl, B., Kosowski, A., Chorowski, J., Stamirowska, Z., Uznański, P., Jiang, J., Phadke, R., Kinas, R., &amp; Zhong, R.</strong> (2026). <em>BDH-CQ: In-Context Learning with Recurrent Latent Reasoning</em>. <a href="https://arxiv.org/abs/2608.09888">arXiv:2608.09888</a>.</li>
+  <li><strong>Schlag, I., Irie, K., &amp; Schmidhuber, J.</strong> (2021). <em>Linear Transformers Are Secretly Fast Weight Programmers</em>. In <em>Proceedings of the 38th International Conference on Machine Learning (ICML 2021)</em>. <a href="https://arxiv.org/abs/2102.11174">arXiv:2102.11174</a>.</li>
+  <li><strong>Sun, Y., Dong, L., Huang, S., Ma, S., Xia, Y., Xue, J., Wang, J., &amp; Wei, F.</strong> (2023). <em>Retentive Network: A Successor to Transformer for Large Language Models</em>. Microsoft Research. <a href="https://arxiv.org/abs/2307.08621">arXiv:2307.08621</a>.</li>
+  <li><strong>Gu, A., &amp; Dao, T.</strong> (2023). <em>Mamba: Linear-Time Sequence Modeling with Selective State Spaces</em>. <a href="https://arxiv.org/abs/2312.00752">arXiv:2312.00752</a>.</li>
+  <li><strong>Hopfield, J. J.</strong> (1982). <em>Neural Networks and Physical Systems with Emergent Collective Computational Abilities</em>. <em>Proceedings of the National Academy of Sciences (PNAS)</em>, 79(8), 2554&ndash;2558.</li>
+</ol>
+
+<div class="footer-counter">
+  DataForge 2026 — Pathway Track &bull; Memory Under Pressure &bull; Educational Monograph
+</div>
+
+</body>
+</html>

@@ -7,7 +7,7 @@ export const Section9Limitations: React.FC = () => {
       title: '1. Finite-Rank State Bottleneck',
       tag: 'Mathematical Limit',
       description:
-        'An associative state matrix S in R^{d x d} has mathematical rank at most d. When storing T facts where T >> d, the pigeonhole principle guarantees that value vectors must be superposed into non-orthogonal directions. Unlike Softmax attention which can query cached tokens with non-linear exponential selectivity, a linear state cannot escape rank saturation.',
+        'An associative state matrix S in R^{d x d} has mathematical rank at most d. When storing T facts where T >> d, the pigeonhole principle guarantees that value vectors must be superposed into non-orthogonal directions. A finite matrix state cannot represent arbitrarily many independent associations without interference as the number of stored associations grows relative to the available state.',
     },
     {
       title: '2. Quasi-Orthogonality in Real Language',
@@ -16,10 +16,10 @@ export const Section9Limitations: React.FC = () => {
         'In synthetic benchmarks, keys can be generated from an orthonormal basis. In natural language text, however, token embeddings are densely clustered on semantic submanifolds with high mutual cosine similarities. This causes real-world recurrent states to experience cross-talk far sooner than idealized orthogonal synthetic codebooks.',
     },
     {
-      title: '3. Decay Factor: Numerical Stability vs Amnesia',
+      title: '3. Decay Factor: Attenuation vs Amnesia',
       tag: 'Optimization Dilemma',
       description:
-        'Setting λ < 1.0 is essential in recurrent architectures (such as RetNet or Mamba) to prevent unbounded state norm growth over millions of tokens. However, this creates an unavoidable exponential forgetting horizon: signals from t steps ago scale as λ^t, inducing severe recency bias and early context amnesia.',
+        'In this recurrence, setting λ < 1.0 attenuates older state contributions and helps prevent unbounded state norm accumulation over long sequences. However, this creates an exponential forgetting horizon: signals from t steps ago scale as λ^t, inducing recency bias and selective context amnesia.',
     },
     {
       title: '4. Linear vs Non-Linear Addressing',
@@ -31,7 +31,7 @@ export const Section9Limitations: React.FC = () => {
       title: '5. Educational Model vs Production BDH / BDH-CQ',
       tag: 'Engineering Reality',
       description:
-        'Our in-browser interactive simulator uses a simplified 2D associative matrix to make linear algebra visually inspectable. Production architectures like Pathway’s Dragon Hatchling BDH (arXiv:2509.26507) and BDH-CQ (arXiv:2608.09888) operate over scale-free graphs of neuron particles, multi-head sparse projections, and iterative latent reasoning loops that exceed simplified toy outer products.',
+        'Our in-browser interactive simulator uses an explicit 2D matrix of size d×d to make linear algebra visually inspectable. Production architectures like Pathway’s Dragon Hatchling BDH (arXiv:2509.26507) and BDH-CQ (arXiv:2608.09888) operate over scale-free graphs of neuron particles, multi-head sparse projections, and iterative latent reasoning loops that exceed simplified toy outer products.',
     },
   ];
 

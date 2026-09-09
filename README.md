@@ -1,12 +1,14 @@
 # Memory Under Pressure: How AI Models Remember, Update and Forget Across Long Sequences
 
-[![Vitest](https://img.shields.io/badge/tests-12%20passing-emerald.svg)](https://github.com/pathwaycom/bdh)
+[![Vitest](https://img.shields.io/badge/tests-12%20passing-emerald.svg)](https://github.com/IshantTripathi/memory-under-pressure)
 [![Vite](https://img.shields.io/badge/vite-8.2-cyan.svg)](https://vitejs.dev)
 [![React](https://img.shields.io/badge/react-19-indigo.svg)](https://react.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./SOURCES_AND_LICENSES.md)
 [![Track](https://img.shields.io/badge/DataForge%202026-Pathway%20Track-blue.svg)](https://pathway.com)
 
 > **Competition Submission:** DataForge 2026 — Pathway Track ("Explain the Frontier")  
+> **Interactive Artifact:** [https://memory-under-pressure-flax.vercel.app](https://memory-under-pressure-flax.vercel.app)  
+> **Source Repository:** [https://github.com/IshantTripathi/memory-under-pressure](https://github.com/IshantTripathi/memory-under-pressure)  
 > **Core Frontier Concept:** Long-Horizon Evolving State, Recurrent Latent Reasoning, and Synaptic Memory in AI Architectures.
 
 ---
@@ -132,7 +134,10 @@ This project directly connects evolving state dynamics to two primary Pathway re
 ├── research/
 │   └── references.md                       # Primary literature verification
 ├── docs/
-│   └── concept_summary.md                  # Printable 1-Page Concept Summary
+│   ├── concept_summary.md                  # Authoritative 1-Page Concept Summary Briefing
+│   ├── concept_summary.pdf                 # Printable 1-Page PDF Document
+│   ├── memory-under-pressure-blog.md       # Comprehensive Educational Blog Markdown
+│   └── memory-under-pressure-blog.pdf      # Polished Technical Blog PDF Document
 ├── EXPERIMENTS.md                          # 5 reproducible benchmark logs
 ├── SOURCES_AND_LICENSES.md                 # Asset licenses & attribution
 ├── AI_DISCLOSURE.md                        # Transparent AI assistance statement
@@ -173,7 +178,7 @@ npx vitest run
 ```bash
 npm run build
 ```
-Creates an optimized production bundle in `dist/` (<1MB, sub-second load time).
+Creates an optimized production bundle in `dist/`.
 
 ---
 
@@ -183,18 +188,18 @@ The interface provides 6 deterministic presets:
 1. **Clean Baseline ($T < d$):** $T=5, d=16$. Orthogonal regime, SNR $> +20\text{ dB}$, 100% exact retrieval.
 2. **Capacity Threshold ($T \approx d$):** $T=16, d=16$. Matrix approaches full rank, mild cross-talk begins.
 3. **Severe Saturation ($T \gg d$):** $T=60, d=8$. Catastrophic cross-talk noise, early facts buried under superposition.
-4. **Selective Decay ($\lambda = 0.92$):** $T=35, d=16$. Exponential decay prevents state explosion, causing recency amnesia.
-5. **Key Collision ($\rho = 0.70$):** $T=20, d=16$. Correlated key vectors force value leakage regardless of dimension.
+4. **Selective Decay ($\lambda = 0.92$):** $T=35, d=16$. Exponential decay attenuates older state entries, causing recency amnesia.
+5. **Key Collision ($\rho = 0.70$):** $T=20, d=16$. Correlated keys can induce retrieval leakage even when the state dimension is large, depending on update and retrieval conditions.
 6. **"Break It" Stress Benchmark:** $T=250, d=8$. Demonstrates hard geometric, representational, and interference capacity limits.
 
 ---
 
 ## 9. Limitations & Failure Cases
 
-1. **Finite Rank:** An associative matrix $S_t \in \mathbb{R}^{d \times d}$ has rank at most $d$. It cannot match the dynamic input-dependent selective precision of non-linear Softmax attention when $T \gg d$.
-2. **Exponential Decay Dilemma:** Setting $\lambda < 1.0$ is necessary to prevent numerical divergence, but exponentially discounts early context ($\lambda^t$), creating recency bias.
+1. **Finite Rank:** An associative matrix $S_t \in \mathbb{R}^{d \times d}$ has rank at most $d$. A finite matrix state cannot represent arbitrarily many independent associations without interference as the number of stored associations grows relative to the available state.
+2. **Exponential Decay Dilemma:** In this toy recurrence, setting $\lambda < 1.0$ attenuates older state contributions and helps prevent unbounded accumulation, but creates an exponential recency horizon where signals scale as $\lambda^t$.
 3. **Quasi-Orthogonality in Real Text:** Natural language embeddings are clustered, causing cross-talk to accumulate significantly faster than in idealized orthogonal codebooks.
-4. **Toy Model Distinctions:** Our simulator uses a 2D associative matrix to make linear algebra inspectable; production architectures (BDH, Mamba, RetNet) utilize multi-layer sparse projections and input-dependent gating.
+4. **Toy Model Distinctions:** Our simulator uses an explicit 2D matrix of size $d \times d$ to make linear algebra inspectable; production architectures (BDH, Mamba, RetNet) utilize multi-layer sparse projections, non-linear activations, and input-dependent gating.
 
 ---
 

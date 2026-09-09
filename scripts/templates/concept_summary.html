@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Executive Concept Summary: Memory Under Pressure</title>
+<style>
+  @page {
+    size: letter portrait;
+    margin: 0.30in 0.42in 0.28in 0.42in;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #0f172a;
+    background: #ffffff;
+    font-size: 7.2pt;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .header {
+    border-bottom: 1.5px solid #0284c7;
+    padding-bottom: 3px;
+    margin-bottom: 5px;
+  }
+  .track-tag {
+    font-family: monospace;
+    font-size: 6.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #0369a1;
+    letter-spacing: 0.05em;
+  }
+  h1 {
+    font-size: 12pt;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.15;
+    margin-top: 1px;
+    margin-bottom: 2px;
+  }
+  .meta-links {
+    font-family: monospace;
+    font-size: 6.5pt;
+    color: #475569;
+  }
+  .meta-links a {
+    color: #0284c7;
+    text-decoration: none;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+  .section {
+    margin-bottom: 4.5px;
+  }
+  .section-title {
+    font-family: monospace;
+    font-size: 7.2pt;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #0f172a;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 1px;
+    margin-bottom: 2.5px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .section-title span.badge {
+    font-size: 5.5pt;
+    background: #f1f5f9;
+    padding: 1px 3px;
+    border-radius: 2px;
+    color: #475569;
+    font-weight: 600;
+  }
+  p {
+    margin-bottom: 2.5px;
+    text-align: justify;
+  }
+  .claim-box {
+    background: #f8fafc;
+    border: 1px solid #0284c7;
+    border-left: 3px solid #0284c7;
+    padding: 3px 5px;
+    margin-bottom: 3.5px;
+    border-radius: 2px;
+  }
+  .claim-text {
+    font-weight: 700;
+    color: #0369a1;
+    font-size: 7.2pt;
+    line-height: 1.25;
+  }
+  .math-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 2.5px 4px;
+    font-family: monospace;
+    font-size: 6.7pt;
+    text-align: center;
+    margin: 2px 0;
+    border-radius: 2px;
+    color: #0f172a;
+  }
+  table.comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 6.1pt;
+    font-family: monospace;
+    margin-top: 2px;
+    margin-bottom: 2.5px;
+  }
+  table.comp-table th {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    padding: 2px 3px;
+    text-align: left;
+    font-weight: 700;
+    color: #334155;
+  }
+  table.comp-table td {
+    border: 1px solid #e2e8f0;
+    padding: 1.5px 3px;
+    vertical-align: top;
+  }
+  .preset-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5px;
+    font-size: 6.1pt;
+    font-family: monospace;
+  }
+  .preset-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 2px 3px;
+    border-radius: 2px;
+  }
+  .preset-card strong {
+    color: #0369a1;
+    display: block;
+    font-size: 6.1pt;
+  }
+  .footer {
+    border-top: 1px solid #cbd5e1;
+    padding-top: 2.5px;
+    margin-top: 2.5px;
+    font-size: 5.8pt;
+    color: #64748b;
+    display: flex;
+    justify-content: space-between;
+    font-family: monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="track-tag">DataForge 2026 Pathway Track &bull; Explain the Frontier &bull; Executive Monograph</div>
+  <h1>Memory Under Pressure: How Fixed-Size State Remembers, Updates, Interferes &amp; Forgets</h1>
+  <div class="meta-links">
+    Artifact: <a href="https://memory-under-pressure-flax.vercel.app">memory-under-pressure-flax.vercel.app</a> &bull;
+    Repo: <a href="https://github.com/IshantTripathi/memory-under-pressure">github.com/IshantTripathi/memory-under-pressure</a> &bull;
+    Author: Ishant Tripathi &bull; Target: ML/AI Engineers
+  </div>
+</div>
+
+<div class="grid">
+  <!-- Left Column -->
+  <div class="col">
+    <div class="section">
+      <div class="section-title">1. The Central Falsifiable Claim <span class="badge">Core Thesis</span></div>
+      <div class="claim-box">
+        <div class="claim-text">&ldquo;A fixed-size evolving state can process sequences whose duration grows without allocating a new memory slot for every token, but limited state capacity can cause interference and forgetting.&rdquo;</div>
+      </div>
+      <p>A fixed-size state representation remains fixed with respect to sequence length <em>T</em> for a fixed model configuration (<em>O(d&sup2;)</em> matrix parameters), avoiding linear growth in cached-token memory (<em>O(T &middot; d)</em> in Transformer KV caches). However, fixed representation size does not imply unlimited capacity or zero information loss: past facts are superposed, creating cross-talk noise and selective forgetting under sequence pressure.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. Recurrent Mechanism &amp; Retrieval Decomposition <span class="badge">Math Substrate</span></div>
+      <p>The educational substrate models an explicit 2D matrix state <em>S<sub>t</sub> &isin; &reals;<sup>d &times; d</sup></em>. Given normalized key-value pairs <em>(k<sub>t</sub>, v<sub>t</sub>)</em>, the state updates incrementally via:</p>
+      <div class="math-box">S<sub>t</sub> = &lambda; S<sub>t-1</sub> + &eta; (v<sub>t</sub> &otimes; k<sub>t</sub><sup>T</sup>) = &sum;<sub>&tau;=1</sub><sup>t</sup> &lambda;<sup>t-&tau;</sup> &eta; (v<sub>&tau;</sub> k<sub>&tau;</sub><sup>T</sup>)</div>
+      <p>Probing with query vector <em>q</em> retrieves <em>v&#770; = S<sub>t</sub> q</em>, which decomposes analytically into signal plus cross-talk noise:</p>
+      <div class="math-box">v&#770; = &lambda;<sup>t-t<sub>target</sub></sup> &eta; (k<sub>target</sub><sup>T</sup> q) v<sub>target</sub> + &sum;<sub>&tau;&ne;target</sub> &lambda;<sup>t-&tau;</sup> &eta; (k<sub>&tau;</sub><sup>T</sup> q) v<sub>&tau;</sub></div>
+      <p>Signal-to-Noise Ratio: <strong>SNR<sub>dB</sub> = 10 log<sub>10</sub>(||s||&sup2; / (||n||&sup2; + &epsilon;))</strong>. When <em>T &le; d</em> and keys form an orthonormal set (<em>k<sub>&tau;</sub><sup>T</sup> q = 0</em> for <em>&tau; &ne; target</em>), noise is zero. But because &reals;<sup>d</sup> supports at most <em>d</em> mutually orthogonal directions, storing <em>T &gt; d</em> associations forces non-orthogonal superpositions that accumulate cross-talk noise.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. Why It Matters: KV-Cache Pressure <span class="badge">Engineering Context</span></div>
+      <p>In standard Transformers, caching past token representations induces linear growth in cached-token memory (<em>O(T &middot; d &middot; L)</em>), leading to GPU VRAM exhaustion, severe memory-bandwidth bottlenecks during autoregressive decoding, and high serving costs on long-horizon reasoning tasks.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. Comparative Architectural Trade-Offs <span class="badge">Taxonomy</span></div>
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Architecture</th>
+            <th>Memory Footprint</th>
+            <th>Inference Step</th>
+            <th>Long-Horizon Failure Mode</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Transformer</strong></td>
+            <td>Linear <em>O(T &middot; d)</em></td>
+            <td><em>O(T)</em> Memory-bound</td>
+            <td>VRAM OOM exhaustion</td>
+          </tr>
+          <tr>
+            <td><strong>Vector RNN</strong></td>
+            <td>Fixed <em>O(d)</em></td>
+            <td><em>O(d&sup2;)</em> Compute-bound</td>
+            <td>Bottleneck (<em>d</em> scalar states)</td>
+          </tr>
+          <tr>
+            <td><strong>Linear SSM</strong></td>
+            <td>Fixed <em>O(d&sup2;)</em> in <em>T</em></td>
+            <td><em>O(d&sup2;)</em> Compute-bound</td>
+            <td>Rank saturation &amp; cross-talk</td>
+          </tr>
+          <tr>
+            <td><strong>BDH (Pathway)</strong></td>
+            <td>Fixed in <em>T</em> for config</td>
+            <td>Fixed in <em>T</em> (latent)</td>
+            <td>Synaptic saturation in latent space</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Right Column -->
+  <div class="col">
+    <div class="section">
+      <div class="section-title">5. What the Learner Can Test (Interactive Simulator) <span class="badge">6 Presets</span></div>
+      <p>The interactive artifact provides an intentionally small educational associative-memory model inspired by recurrent state architectures, demonstrating 6 deterministic test regimes (Mulberry32 PRNG):</p>
+      <div class="preset-grid">
+        <div class="preset-card">
+          <strong>Clean Baseline (T=5, d=16)</strong>
+          Orthonormal keys; noise = 0.000; SNR = +90 dB; 100% exact retrieval.
+        </div>
+        <div class="preset-card">
+          <strong>Capacity Bound (T=16, d=16)</strong>
+          State approaches full rank; mild cross-talk begins (SNR = +6.9 dB).
+        </div>
+        <div class="preset-card">
+          <strong>Severe Overload (T=60, d=8)</strong>
+          T &gt;&gt; d; cross-talk exceeds signal (SNR = -8.5 dB); interference failure.
+        </div>
+        <div class="preset-card">
+          <strong>Selective Decay (T=35, d=16, &lambda;=0.92)</strong>
+          Norm bounded; early fact decays by 94.1% (&lambda;<sup>34</sup>); recency amnesia.
+        </div>
+        <div class="preset-card">
+          <strong>Key Collision (T=20, d=16, &rho;=0.70)</strong>
+          Correlated keys cause leakage even with relatively large state size.
+        </div>
+        <div class="preset-card">
+          <strong>Break-It Stress (T=250, d=8)</strong>
+          Empirical phase-transition curve mapping accuracy vs T/d ratio.
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">6. Pathway Frontier Connection: BDH &amp; BDH-CQ <span class="badge">Frontier Role</span></div>
+      <p>Pathway researchers resolved recurrent representational bottlenecks in <strong>Dragon Hatchling (BDH, arXiv:2509.26507)</strong> by reformulating attention as dynamic synaptic plasticity over sparse particle graphs with <em>Q=K</em> Hebbian self-affinity and non-negative activations. <strong>BDH-CQ (arXiv:2608.09888)</strong> extends this to in-context learning: demonstrations update recurrent memory at inference time, and queries are solved iteratively in high-dimensional latent space without verbalizing text tokens.</p>
+      <p><strong>Published Result:</strong> On public ARC-AGI-1 evaluation, a 150M BDH-CQ model achieved <strong>29.5% pass@2 at $0.0007 per task</strong> (under 1/10th cent), establishing a reported cost-efficiency Pareto point.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">7. Scientific Boundaries &amp; Limitations <span class="badge">Rigor</span></div>
+      <p><strong>1. Finite Rank:</strong> A matrix <em>S &isin; &reals;<sup>d &times; d</sup></em> has rank &le; <em>d</em>; it cannot store arbitrarily many independent associations without interference as <em>T</em> grows relative to <em>d</em>.<br>
+      <strong>2. Decay Dilemma:</strong> In this recurrence, <em>&lambda; &lt; 1</em> prevents unbounded norm growth but creates an exponential forgetting horizon (<em>&lambda;<sup>t</sup></em>).<br>
+      <strong>3. Quasi-Orthogonality:</strong> Clustered semantic embeddings cause cross-talk earlier than orthogonal codebooks.<br>
+      <strong>4. Toy Demarcation:</strong> The simulator is an educational toy model, not production BDH.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">8. Key References <span class="badge">Primary Literature</span></div>
+      <p style="font-size: 5.8pt; font-family: monospace; color: #334155; line-height: 1.2;">
+        1. Kosowski et al. (Pathway, 2025). <em>The Dragon Hatchling</em>. arXiv:2509.26507.<br>
+        2. Engdahl et al. (Pathway, 2026). <em>BDH-CQ: In-Context Recurrent Latent Reasoning</em>. arXiv:2608.09888.<br>
+        3. Schlag, Irie, Schmidhuber (2021). <em>Linear Transformers Are Fast Weight Programmers</em>. ICML.<br>
+        4. Sun et al. (Microsoft, 2023). <em>Retentive Network (RetNet)</em>. arXiv:2307.08621.<br>
+        5. Gu &amp; Dao (2023). <em>Mamba: Selective State Spaces</em>. arXiv:2312.00752.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>DataForge 2026 Submission &bull; Pathway Track &bull; One-Page Concept Summary</span>
+  <span>Page 1 of 1 &bull; Verified Build</span>
+</div>
+
+</body>
+</html>
